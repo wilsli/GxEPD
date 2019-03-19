@@ -36,7 +36,7 @@ A simple E-Paper display library with common base class and separate IO class fo
 - GDE0213B1         2.13" b/w
 - GDEW0213I5F    2.13" b/w flexible
 - GDEW0213Z16   2.13" b/w/r
-- GxGDE0213B72  2.13" b/r
+- GxGDE0213B72  2.13" b/w
 - GDEH029A1        2.9" b/w
 - GDEW029T5       2.9" b/w
 - GDEW029Z10     2.9" b/w/r
