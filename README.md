@@ -30,6 +30,7 @@ A simple E-Paper display library with common base class and separate IO class fo
 - Good Dispay ePaper for Arduino : https://forum.arduino.cc/index.php?topic=436411.0
 
 ### Supported SPI e-paper panels from Good Display:
+- GxGDEW0102I4F     1.02" b/w       `only can be updated globally`
 - GDEP015OC1      1.54" b/w
 - GDEW0154Z04   1.54" b/w/r 200x200
 - GDEW0154Z17   1.54" b/w/r 152x152
