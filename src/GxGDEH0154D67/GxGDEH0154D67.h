@@ -1,7 +1,7 @@
-// class GxGDEW042T2 : Display class for GDEW042T2 e-Paper from Dalian Good Display Co., Ltd.: www.good-display.com
+// class GxGDEH0154D67 : Display class for GDEH0154D67 e-Paper from Dalian Good Display Co., Ltd.: www.e-paper-display.com
 //
-// based on Demo Example from Good Display, available here: http://www.good-display.com/download_detail/downloadsId=515.html
-// Controller: IL0398 : http://www.good-display.com/download_detail/downloadsId=537.html
+// based on Demo Example from Good Display, available here: http://www.e-paper-display.com/download_detail/downloadsId=806.html
+// Controller : SSD1681 : http://www.e-paper-display.com/download_detail/downloadsId=825.html
 //
 // Author : J-M Zingg
 //
@@ -11,31 +11,34 @@
 //
 // Library: https://github.com/ZinggJM/GxEPD
 
-#ifndef _GxGDEW042T2_H_
-#define _GxGDEW042T2_H_
+#ifndef _GxGDEH0154D67_H_
+#define _GxGDEH0154D67_H_
 
+#include <Arduino.h>
 #include "../GxEPD.h"
 
-#define GxGDEW042T2_WIDTH 400
-#define GxGDEW042T2_HEIGHT 300
+// the physical number of pixels (for controller parameter)
+#define GxGDEH0154D67_X_PIXELS 200
+#define GxGDEH0154D67_Y_PIXELS 200
 
-#define GxGDEW042T2_BUFFER_SIZE (uint32_t(GxGDEW042T2_WIDTH) * uint32_t(GxGDEW042T2_HEIGHT) / 8)
+#define GxGDEH0154D67_WIDTH GxGDEH0154D67_X_PIXELS
+#define GxGDEH0154D67_HEIGHT GxGDEH0154D67_Y_PIXELS
 
-// divisor for AVR, should be factor of GxGDEW042T2_HEIGHT
-#define GxGDEW042T2_PAGES 20
+#define GxGDEH0154D67_BUFFER_SIZE (uint32_t(GxGDEH0154D67_WIDTH) * uint32_t(GxGDEH0154D67_HEIGHT) / 8)
 
-#define GxGDEW042T2_PAGE_HEIGHT (GxGDEW042T2_HEIGHT / GxGDEW042T2_PAGES)
-#define GxGDEW042T2_PAGE_SIZE (GxGDEW042T2_BUFFER_SIZE / GxGDEW042T2_PAGES)
+// divisor for AVR, should be factor of GxGDEH0154D67_HEIGHT
+#define GxGDEH0154D67_PAGES 5
 
-class GxGDEW042T2 : public GxEPD
+#define GxGDEH0154D67_PAGE_HEIGHT (GxGDEH0154D67_HEIGHT / GxGDEH0154D67_PAGES)
+#define GxGDEH0154D67_PAGE_SIZE (GxGDEH0154D67_BUFFER_SIZE / GxGDEH0154D67_PAGES)
+
+class GxGDEH0154D67 : public GxEPD
 {
   public:
 #if defined(ESP8266)
-    //GxGDEW042T2(GxIO& io, int8_t rst = D4, int8_t busy = D2);
-    // use pin numbers, other ESP8266 than Wemos may not use Dx names
-    GxGDEW042T2(GxIO& io, int8_t rst = 2, int8_t busy = 4);
+    GxGDEH0154D67(GxIO& io, int8_t rst = 2, int8_t busy = 4);
 #else
-    GxGDEW042T2(GxIO& io, int8_t rst = 9, int8_t busy = 7);
+    GxGDEH0154D67(GxIO& io, int8_t rst = 9, int8_t busy = 7);
 #endif
     void drawPixel(int16_t x, int16_t y, uint16_t color);
     void init(uint32_t serial_diag_bitrate = 0); // = 0 : disabled
@@ -52,7 +55,7 @@ class GxGDEW042T2 : public GxEPD
     void updateToWindow(uint16_t xs, uint16_t ys, uint16_t xd, uint16_t yd, uint16_t w, uint16_t h, bool using_rotation = true);
     // terminate cleanly updateWindow or updateToWindow before removing power or long delays
     void powerDown();
-    // paged drawing, for limited RAM, drawCallback() is called GxGDEW042T2_PAGES times
+    // paged drawing, for limited RAM, drawCallback() is called GxGDEH0154D67_PAGES times
     // each call of drawCallback() should draw the same
     void drawPaged(void (*drawCallback)(void));
     void drawPaged(void (*drawCallback)(uint32_t), uint32_t);
@@ -63,7 +66,7 @@ class GxGDEW042T2 : public GxEPD
     void drawPagedToWindow(void (*drawCallback)(uint32_t), uint16_t x, uint16_t y, uint16_t w, uint16_t h, uint32_t);
     void drawPagedToWindow(void (*drawCallback)(const void*), uint16_t x, uint16_t y, uint16_t w, uint16_t h, const void*);
     void drawPagedToWindow(void (*drawCallback)(const void*, const void*), uint16_t x, uint16_t y, uint16_t w, uint16_t h, const void*, const void*);
-    void drawCornerTest(uint8_t em = 0);
+    void drawCornerTest(uint8_t em = 0x01);
   private:
     template <typename T> static inline void
     swap(T& a, T& b)
@@ -73,36 +76,38 @@ class GxGDEW042T2 : public GxEPD
       b = t;
     }
     void _writeToWindow(uint16_t xs, uint16_t ys, uint16_t xd, uint16_t yd, uint16_t w, uint16_t h);
-    uint16_t _setPartialRamArea(uint16_t x, uint16_t y, uint16_t xe, uint16_t ye);
-    void _wakeUp();
-    void _sleep(void);
-    void _waitWhileBusy(const char* comment = 0);
-    void _Init_FullUpdate();
-    void _Init_PartialUpdate();
+    void _writeData(uint8_t data);
+    void _writeCommand(uint8_t command);
+    void _writeCommandData(const uint8_t* pCommandData, uint8_t datalen);
+    void _SetRamPointer(uint8_t addrX, uint8_t addrY, uint8_t addrY1);
+    void _SetRamArea(uint8_t Xstart, uint8_t Xend, uint8_t Ystart, uint8_t Ystart1, uint8_t Yend, uint8_t Yend1);
+    void _PowerOn(void);
+    void _PowerOff(void);
+    void _waitWhileBusy(const char* comment, uint16_t busy_time);
+    void _setRamDataEntryMode(uint8_t em);
+    void _InitDisplay(uint8_t em);
+    void _Init_Full(uint8_t em);
+    void _Init_Part(uint8_t em);
+    void _Update_Full(void);
+    void _Update_Part(void);
     void _rotate(uint16_t& x, uint16_t& y, uint16_t& w, uint16_t& h);
-    void _writeDataPGM(const uint8_t* data, uint16_t n, int16_t fill_with_zeroes = 0);
-  private:
+  protected:
 #if defined(__AVR)
-    uint8_t _buffer[GxGDEW042T2_PAGE_SIZE];
+    uint8_t _buffer[GxGDEH0154D67_PAGE_SIZE];
 #else
-    uint8_t _buffer[GxGDEW042T2_BUFFER_SIZE];
+    uint8_t _buffer[GxGDEH0154D67_BUFFER_SIZE];
 #endif
+  private:
     GxIO& IO;
     int16_t _current_page;
-    bool _initial, _using_partial_mode;
+    bool _using_partial_mode;
     bool _diag_enabled;
     int8_t _rst;
     int8_t _busy;
-    static const unsigned char lut_vcom0_full[];
-    static const unsigned char lut_ww_full[];
-    static const unsigned char lut_bw_full[];
-    static const unsigned char lut_bb_full[];
-    static const unsigned char lut_wb_full[];
-    static const unsigned char lut_20_vcom0_partial[];
-    static const unsigned char lut_21_ww_partial[];
-    static const unsigned char lut_22_bw_partial[];
-    static const unsigned char lut_23_wb_partial[];
-    static const unsigned char lut_24_bb_partial[];
+    static const uint16_t power_on_time = 80; // ms, e.g. 73508us
+    static const uint16_t power_off_time = 80; // ms, e.g. 68982us
+    static const uint16_t full_refresh_time = 1200; // ms, e.g. 1113273us
+    static const uint16_t partial_refresh_time = 300; // ms, e.g. 290867us
 #if defined(ESP8266) || defined(ESP32)
   public:
     // the compiler of these packages has a problem with signature matching to base classes
@@ -114,11 +119,11 @@ class GxGDEW042T2 : public GxEPD
 };
 
 #ifndef GxEPD_Class
-#define GxEPD_Class GxGDEW042T2
-#define GxEPD_WIDTH GxGDEW042T2_WIDTH
-#define GxEPD_HEIGHT GxGDEW042T2_HEIGHT
-#define GxEPD_BitmapExamples <GxGDEW042T2/BitmapExamples.h>
-#define GxEPD_BitmapExamplesQ "GxGDEW042T2/BitmapExamples.h"
+#define GxEPD_Class GxGDEH0154D67
+#define GxEPD_WIDTH GxGDEH0154D67_WIDTH
+#define GxEPD_HEIGHT GxGDEH0154D67_HEIGHT
+#define GxEPD_BitmapExamples <GxGDEH0154D67/BitmapExamples.h>
+#define GxEPD_BitmapExamplesQ "GxGDEH0154D67/BitmapExamples.h"
 #endif
 
 #endif
