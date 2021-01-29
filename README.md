@@ -36,30 +36,36 @@ A simple E-Paper display library with common base class and separate IO class fo
 - Good Dispay ePaper for Arduino : https://forum.arduino.cc/index.php?topic=436411.0
 
 ### Supported SPI e-paper panels from Good Display:
-- GxGDEW0102I4F     1.02" b/w       `only can be updated globally`
-- GDEP015OC1     1.54" b/w 200x200
-- GDEH0154D67    1.54" b/w 200x200 replacement for GDEP015OC1
-- GDEW0154Z04    1.54" b/w/r 200x200
-- GDEW0154Z17    1.54" b/w/r 152x152
-- GDE0213B1      2.13" b/w
-- GDEH0213B72    2.13" b/w, replacement for GDE0213B1
-- GDEH0213B73    2.13" b/w, new replacement for GDE0213B1, GDEH0213B72
-- GDEW0213I5F    2.13" b/w flexible
-- GDEW0213Z16    2.13" b/w/r
-- GDEH029A1      2.9" b/w
-- GDEW029T5      2.9" b/w
-- GDEW029Z10     2.9" b/w/r
-- GDEW026T0      2.6" b/w
-- GDEW027C44     2.7" b/w/r
-- GDEW027W3      2.7" b/w
-- GDEW0371W7     3.7" b/w
-- GDEW042T2      4.2" b/w
-- GDEW042Z15     4.2" b/w/r
-- GDEW0583T7     5.83" b/w
-- GDEW075T8      7.5" b/w
-- GDEW075T7      7.5" b/w 800x480
-- GDEW075Z09     7.5" b/w/r
-- GDEW075Z08     7.5" b/w/r 800x480
+- GxGDEW0102I4F     1.02"  b/w  `only can be updated globally`
+- GDEP015OC1        1.54"  b/w  200x200
+- GDEH0154D67       1.54"  b/w  200x200 replacement for GDEP015OC1
+- GDEW0154Z04       1.54"  b/w/r 200x200
+- GDEW0154Z17       1.54"  b/w/r 152x152
+- DEPG0150BN        1.54"  b/w  200x200
+- GDE0213B1         2.13"  b/w
+- GDEH0213B72       2.13"  b/w, replacement for GDE0213B1
+- GDEH0213B73       2.13"  b/w, new replacement for GDE0213B1, GDEH0213B72
+- GDEW0213I5F       2.13"  b/w  flexible
+- GDEW0213Z16       2.13"  b/w/r
+- DEPG0213BN        2.13"  b/w
+- GDEH029A1         2.9"   b/w
+- GDEW029T5         2.9"   b/w
+- QYEG0290BN        2.9"   b/w
+- DEPG0290B         2.9"   b/w
+- GDEW029Z10        2.9"   b/w/r
+- GDEW026T0         2.6"   b/w
+- GDEW027C44        2.7"   b/w/r
+- GDEW027W3         2.7"   b/w
+- GDEW0371W7        3.7"   b/w
+- GDEW042T2         4.2"   b/w
+- GDEW042Z15        4.2"   b/w/r
+- GDEW0583T7        5.83"  b/w
+- GDEW075T8         7.5"   b/w
+- GDEW075T7         7.5"   b/w   800x480
+- GDEW075Z09        7.5"   b/w/r
+- GDEW075Z08        7.5"   b/w/r 800x480
+
+
 #### Supported SPI e-paper panels & boards from Waveshare: compare with Good Display, same panel
 
 ### I can and will only support e-paper panels I have!

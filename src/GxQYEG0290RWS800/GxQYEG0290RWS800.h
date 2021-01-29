@@ -1,7 +1,7 @@
-// class GxGDEH0213B72 : Display class for GDEH0213B72 e-Paper from Dalian Good Display Co., Ltd.: http://www.e-paper-display.com
+// class GxQYEG0290RWS800 : Display class for GDEW029Z10 e-Paper from Dalian Good Display Co., Ltd.: www.good-display.com
 //
-// based on Demo Example from Good Display: http://www.e-paper-display.com/download_list/downloadcategoryid=34&isMode=false.html
-// Controller: IL3897 :
+// based on Demo Example from Good Display, available here: http://www.good-display.com/download_detail/downloadsId=515.html
+// Controller: IL0373 : http://www.good-display.com/download_detail/downloadsId=535.html
 //
 // Author : J-M Zingg
 //
@@ -11,46 +11,42 @@
 //
 // Library: https://github.com/ZinggJM/GxEPD
 
-#ifndef _GxGDEH0213B72_H_
-#define _GxGDEH0213B72_H_
+#ifndef _GxQYEG0290RWS800_H_
+#define _GxQYEG0290RWS800_H_
 
 #include "../GxEPD.h"
 
-// the physical number of pixels (for controller parameter)
-#define GxGDEH0213B72_X_PIXELS 128
-#define GxGDEH0213B72_Y_PIXELS 250
+#define GxQYEG0290RWS800_WIDTH 128
+#define GxQYEG0290RWS800_HEIGHT 296
 
-// the logical width and height of the display
-#define GxGDEH0213B72_WIDTH GxGDEH0213B72_X_PIXELS
-#define GxGDEH0213B72_HEIGHT GxGDEH0213B72_Y_PIXELS
+#define GxQYEG0290RWS800_BUFFER_SIZE (uint32_t(GxQYEG0290RWS800_WIDTH) * uint32_t(GxQYEG0290RWS800_HEIGHT) / 8)
 
-// note: the visible number of display pixels is 122*250, see GDEH0213B72 V1.1 Specification.pdf
-#define GxGDEH0213B72_VISIBLE_WIDTH 122
+// divisor for AVR, should be factor of GxQYEG0290RWS800_HEIGHT
+#define GxQYEG0290RWS800_PAGES 8
 
-#define GxGDEH0213B72_BUFFER_SIZE (uint32_t(GxGDEH0213B72_WIDTH) * uint32_t(GxGDEH0213B72_HEIGHT) / 8)
+#define GxQYEG0290RWS800_PAGE_HEIGHT (GxQYEG0290RWS800_HEIGHT / GxQYEG0290RWS800_PAGES)
+#define GxQYEG0290RWS800_PAGE_SIZE (GxQYEG0290RWS800_BUFFER_SIZE / GxQYEG0290RWS800_PAGES)
 
-// divisor for AVR, should be factor of GxGDEH0213B72_HEIGHT
-#define GxGDEH0213B72_PAGES 5
-
-#define GxGDEH0213B72_PAGE_HEIGHT (GxGDEH0213B72_HEIGHT / GxGDEH0213B72_PAGES)
-#define GxGDEH0213B72_PAGE_SIZE (GxGDEH0213B72_BUFFER_SIZE / GxGDEH0213B72_PAGES)
-
-class GxGDEH0213B72 : public GxEPD
+class GxQYEG0290RWS800 : public GxEPD
 {
 public:
 #if defined(ESP8266)
-    //GxGDEH0213B72(GxIO& io, int8_t rst = D4, int8_t busy = D2);
+    //GxQYEG0290RWS800(GxIO& io, int8_t rst = D4, int8_t busy = D2);
     // use pin numbers, other ESP8266 than Wemos may not use Dx names
-    GxGDEH0213B72(GxIO &io, int8_t rst = 2, int8_t busy = 4);
+    GxQYEG0290RWS800(GxIO &io, int8_t rst = 2, int8_t busy = 4);
 #else
-    GxGDEH0213B72(GxIO &io, int8_t rst = 9, int8_t busy = 7);
+    GxQYEG0290RWS800(GxIO &io, int8_t rst = 9, int8_t busy = 7);
 #endif
     void drawPixel(int16_t x, int16_t y, uint16_t color);
     void init(uint32_t serial_diag_bitrate = 0); // = 0 : disabled
-    void fillScreen(uint16_t color); // 0x0 black, >0x0 white, to buffer
+    void fillScreen(uint16_t color); // to buffer
     void update(void);
     // to buffer, may be cropped, drawPixel() used, update needed
     void  drawBitmap(const uint8_t *bitmap, uint16_t x, uint16_t y, uint16_t w, uint16_t h, uint16_t color, int16_t mode = bm_normal);
+    // to full screen, filled with white if size is less, no update needed, black  /white / red, for example bitmaps
+    void drawExamplePicture(const uint8_t *black_bitmap, const uint8_t *red_bitmap, uint32_t black_size, uint32_t red_size);
+    // to full screen, filled with white if size is less, no update needed, black  /white / red, general version
+    void drawPicture(const uint8_t *black_bitmap, const uint8_t *red_bitmap, uint32_t black_size, uint32_t red_size, int16_t mode = bm_normal);
     // to full screen, filled with white if size is less, no update needed
     void drawBitmap(const uint8_t *bitmap, uint32_t size, int16_t mode = bm_normal); // only bm_normal, bm_invert, bm_partial_update modes implemented
     void eraseDisplay(bool using_partial_update = false);
@@ -60,7 +56,7 @@ public:
     void updateToWindow(uint16_t xs, uint16_t ys, uint16_t xd, uint16_t yd, uint16_t w, uint16_t h, bool using_rotation = true);
     // terminate cleanly updateWindow or updateToWindow before removing power or long delays
     void powerDown();
-    // paged drawing, for limited RAM, drawCallback() is called GxGDEH0213B72_PAGES times
+    // paged drawing, for limited RAM, drawCallback() is called GxQYEG0290RWS800_PAGES times
     // each call of drawCallback() should draw the same
     void drawPaged(void (*drawCallback)(void));
     void drawPaged(void (*drawCallback)(uint32_t), uint32_t);
@@ -72,7 +68,7 @@ public:
     void drawPagedToWindow(void (*drawCallback)(const void *), uint16_t x, uint16_t y, uint16_t w, uint16_t h, const void *);
     void drawPagedToWindow(void (*drawCallback)(const void *, const void *), uint16_t x, uint16_t y, uint16_t w, uint16_t h, const void *, const void *);
     void drawCornerTest(uint8_t em = 0x01);
-private:
+// private:
     template <typename T> static inline void
     swap(T &a, T &b)
     {
@@ -80,38 +76,33 @@ private:
         a = b;
         b = t;
     }
-    void _writeToWindow(uint8_t command, uint16_t xs, uint16_t ys, uint16_t xd, uint16_t yd, uint16_t w, uint16_t h);
+
+    void _writeToWindow(uint16_t xs, uint16_t ys, uint16_t xd, uint16_t yd, uint16_t w, uint16_t h, bool using_rotation = true);
+    uint16_t _setPartialRamArea(uint16_t x, uint16_t y, uint16_t xe, uint16_t ye);
     void _writeData(uint8_t data);
     void _writeCommand(uint8_t command);
-    void _writeData(const uint8_t *data, uint16_t n);
-    void _writeCommandData(const uint8_t *pCommandData, uint8_t datalen);
-    void _SetRamPointer(uint8_t addrX, uint8_t addrY, uint8_t addrY1);
-    void _SetRamArea(uint8_t Xstart, uint8_t Xend, uint8_t Ystart, uint8_t Ystart1, uint8_t Yend, uint8_t Yend1);
-    void _PowerOn(void);
-    void _PowerOff(void);
+    void _wakeUp();
+    void _sleep();
     void _waitWhileBusy(const char *comment = 0);
-    void _setRamDataEntryMode(uint8_t em);
-    void _InitDisplay(uint8_t em);
-    void _Init_Full(uint8_t em);
-    void _Init_Part(uint8_t em);
-    void _Update_Full(void);
-    void _Update_Part(void);
     void _rotate(uint16_t &x, uint16_t &y, uint16_t &w, uint16_t &h);
-protected:
-#if defined(__AVR)
-    uint8_t _buffer[GxGDEH0213B72_PAGE_SIZE];
-#else
-    uint8_t _buffer[GxGDEH0213B72_BUFFER_SIZE];
-#endif
+    void _setRamDataEntryMode(uint8_t em);
+    void _SetRamArea(uint8_t Xstart, uint8_t Xend, uint8_t Ystart, uint8_t Ystart1, uint8_t Yend, uint8_t Yend1);
+    void _SetRamPointer(uint8_t addrX, uint8_t addrY, uint8_t addrY1);;
+
 private:
+#if defined(__AVR)
+    uint8_t _black_buffer[GxQYEG0290RWS800_PAGE_SIZE];
+    uint8_t _red_buffer[GxQYEG0290RWS800_PAGE_SIZE];
+#else
+    uint8_t _black_buffer[GxQYEG0290RWS800_BUFFER_SIZE];
+    uint8_t _red_buffer[GxQYEG0290RWS800_BUFFER_SIZE];
+#endif
     GxIO &IO;
     int16_t _current_page;
     bool _using_partial_mode;
     bool _diag_enabled;
     int8_t _rst;
     int8_t _busy;
-    static const uint8_t LUT_DATA_full[];
-    static const uint8_t LUT_DATA_part[];
 #if defined(ESP8266) || defined(ESP32)
 public:
     // the compiler of these packages has a problem with signature matching to base classes
@@ -123,11 +114,12 @@ public:
 };
 
 #ifndef GxEPD_Class
-#define GxEPD_Class GxGDEH0213B72
-#define GxEPD_WIDTH GxGDEH0213B72_WIDTH
-#define GxEPD_HEIGHT GxGDEH0213B72_HEIGHT
-#define GxEPD_BitmapExamples <GxGDEH0213B72/BitmapExamples.h>
-#define GxEPD_BitmapExamplesQ "GxGDEH0213B72/BitmapExamples.h"
+#define GxEPD_Class GxQYEG0290RWS800
+#define GxEPD_WIDTH GxQYEG0290RWS800_WIDTH
+#define GxEPD_HEIGHT GxQYEG0290RWS800_HEIGHT
+#define GxEPD_BitmapExamples <GxQYEG0290RWS800/BitmapExamples.h>
+#define GxEPD_BitmapExamplesQ "GxQYEG0290RWS800/BitmapExamples.h"
 #endif
 
 #endif
+
