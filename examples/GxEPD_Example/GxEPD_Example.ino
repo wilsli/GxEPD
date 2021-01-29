@@ -18,6 +18,7 @@
 // #include <GxGDEW0154Z04/GxGDEW0154Z04.h>  // 1.54" b/w/r 200x200
 // #include <GxGDEW0154Z17/GxGDEW0154Z17.h>  // 1.54" b/w/r 152x152
 // #include <GxGDEH0154D67/GxGDEH0154D67.h>  // 1.54" b/w
+// #include <GxDEPG0150BN/GxDEPG0150BN.h>    // 1.51" b/w newer panel
 
 // #include <GxGDEW027C44/GxGDEW027C44.h>    // 2.7" b/w/r
 // #include <GxGDEW027W3/GxGDEW027W3.h>      // 2.7" b/w
@@ -27,7 +28,6 @@
 // #include <GxGDEH0213B72/GxGDEH0213B72.h>  // 2.13" b/w new panel
 // #include <GxGDEH0213B73/GxGDEH0213B73.h>  // 2.13" b/w newer panel
 // #include <GxDEPG0213BN/GxDEPG0213BN.h>    // 2.13" b/w newer panel
-// #include <GxDEPG0150BN/GxDEPG0150BN.h>    // 2.13" b/w newer panel
 
 
 // #include <GxGDEW029Z10/GxGDEW029Z10.h>    // 2.9" b/w/r
