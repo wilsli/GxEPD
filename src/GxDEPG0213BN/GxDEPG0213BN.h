@@ -1,8 +1,9 @@
-// class GxDEPG0213BN : Display class for DEPG0213BN e-Paper from DEK GROUP
+// class GxDEPG0213BN : Display class for GDEP015OC1 e-Paper from Dalian Good Display Co., Ltd.: www.good-display.com
 //
-// Controller: SSD1680 : https://v4.cecdn.yun300.cn/100001_1909185147/SSD1680.pdf
+// based on Demo Example from Good Display, available here: http://www.good-display.com/download_detail/downloadsId=515.html
+// Controller : IL3829 : http://www.good-display.com/download_detail/downloadsId=534.html
 //
-// Author : Lewis
+// Author : J-M Zingg
 //
 // Version : see library.properties
 //
@@ -13,14 +14,14 @@
 #ifndef _GxDEPG0213BN_H_
 #define _GxDEPG0213BN_H_
 
+#include <Arduino.h>
 #include "../GxEPD.h"
 
 // the physical number of pixels (for controller parameter)
 #define GxDEPG0213BN_X_PIXELS 128
 #define GxDEPG0213BN_Y_PIXELS 250
 
-// the logical width and height of the display
-#define GxDEPG0213BN_WIDTH GxDEPG0213BN_X_PIXELS
+#define GxDEPG0213BN_WIDTH  GxDEPG0213BN_X_PIXELS
 #define GxDEPG0213BN_HEIGHT GxDEPG0213BN_Y_PIXELS
 
 // note: the visible number of display pixels is 122*250, see GDEH0213B72 V1.1 Specification.pdf
@@ -79,16 +80,15 @@ private:
         a = b;
         b = t;
     }
-    void _writeToWindow(uint8_t command, uint16_t xs, uint16_t ys, uint16_t xd, uint16_t yd, uint16_t w, uint16_t h);
+    void _writeToWindow(uint16_t xs, uint16_t ys, uint16_t xd, uint16_t yd, uint16_t w, uint16_t h);
     void _writeData(uint8_t data);
     void _writeCommand(uint8_t command);
-    void _writeData(const uint8_t *data, uint16_t n);
     void _writeCommandData(const uint8_t *pCommandData, uint8_t datalen);
     void _SetRamPointer(uint8_t addrX, uint8_t addrY, uint8_t addrY1);
     void _SetRamArea(uint8_t Xstart, uint8_t Xend, uint8_t Ystart, uint8_t Ystart1, uint8_t Yend, uint8_t Yend1);
     void _PowerOn(void);
     void _PowerOff(void);
-    void _waitWhileBusy(const char *comment = 0);
+    void _waitWhileBusy(const char *comment, uint16_t busy_time);
     void _setRamDataEntryMode(uint8_t em);
     void _InitDisplay(uint8_t em);
     void _Init_Full(uint8_t em);
@@ -109,8 +109,17 @@ private:
     bool _diag_enabled;
     int8_t _rst;
     int8_t _busy;
-    static const uint8_t LUT_DATA_full[];
-    static const uint8_t LUT_DATA_part[];
+    static const uint8_t LUTDefault_part[];
+    static const uint8_t LUTDefault_full[];
+    static const uint8_t GDOControl[];
+    static const uint8_t softstart[];
+    static const uint8_t VCOMVol[];
+    static const uint8_t DummyLine[];
+    static const uint8_t Gatetime[];
+    static const uint16_t power_on_time = 80; // ms, e.g. 73508us
+    static const uint16_t power_off_time = 80; // ms, e.g. 68982us
+    static const uint16_t full_refresh_time = 1200; // ms, e.g. 1113273us
+    static const uint16_t partial_refresh_time = 300; // ms, e.g. 290867us
 #if defined(ESP8266) || defined(ESP32)
 public:
     // the compiler of these packages has a problem with signature matching to base classes
@@ -130,3 +139,6 @@ public:
 #endif
 
 #endif
+
+
+

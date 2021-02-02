@@ -1,7 +1,7 @@
-// class GxDEPG0290B : Display class for GDEH029A1 e-Paper from Dalian Good Display Co., Ltd.: www.good-display.com
+// class GxDEPG0290B : Display class for GDEP015OC1 e-Paper from Dalian Good Display Co., Ltd.: www.good-display.com
 //
 // based on Demo Example from Good Display, available here: http://www.good-display.com/download_detail/downloadsId=515.html
-// Controller: IL3820 : http://www.good-display.com/download_detail/downloadsId=540.html
+// Controller : IL3829 : http://www.good-display.com/download_detail/downloadsId=534.html
 //
 // Author : J-M Zingg
 //
@@ -24,7 +24,9 @@
 // Partial Update Delay, may have an influence on degradation
 #define GxDEPG0290B_PU_DELAY 300
 
+
 const uint8_t GxDEPG0290B::LUTDefault_part[] = {
+    0x32,
     0x00, 0x40, 0x00, 0x00, 0x00, 0x00, 0x00,
     0x00, 0x00, 0x00, 0x00, 0x00,
     0x80, 0x80, 0x00, 0x00, 0x00, 0x00, 0x00,
@@ -48,10 +50,15 @@ const uint8_t GxDEPG0290B::LUTDefault_part[] = {
     0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     0x22, 0x22, 0x22, 0x22, 0x22, 0x22, 0x00,
-    0x00, 0x00, 0x22, 0x17, 0x41, 0xB0, 0x32,
-    0x36,
+    0x00, 0x00, //0x22, 0x17, 0x41, 0xB0, 0x32,
+    // 0x36,
 };
 
+const uint8_t GxDEPG0290B::GDOControl[] = {0x01, (GxDEPG0290B_Y_PIXELS - 1) % 256, (GxDEPG0290B_Y_PIXELS - 1) / 256, 0x00}; //for 1.54inch
+const uint8_t GxDEPG0290B::softstart[] = {0x0c, 0xd7, 0xd6, 0x9d};
+const uint8_t GxDEPG0290B::VCOMVol[] = {0x2c, 0x9b}; // VCOM 7c
+const uint8_t GxDEPG0290B::DummyLine[] = {0x3a, 0x1a}; // 4 dummy line per gate
+const uint8_t GxDEPG0290B::Gatetime[] = {0x3b, 0x08}; // 2us per line
 
 GxDEPG0290B::GxDEPG0290B(GxIO &io, int8_t rst, int8_t busy) :
     GxEPD(GxDEPG0290B_WIDTH, GxDEPG0290B_HEIGHT), IO(io),
@@ -102,14 +109,14 @@ void GxDEPG0290B::init(uint32_t serial_diag_bitrate)
     }
     IO.init();
     IO.setFrequency(4000000); // 4MHz
-    pinMode(_busy, INPUT);
+    if (_busy >= 0) pinMode(_busy, INPUT);
     if (_rst >= 0) {
         pinMode(_rst, OUTPUT);
         digitalWrite(_rst, LOW);
         delay(10);
         digitalWrite(_rst, HIGH);
         delay(10);
-        _waitWhileBusy();
+        _waitWhileBusy("", 10000);
     }
     fillScreen(GxEPD_WHITE);
     _current_page = -1;
@@ -153,7 +160,7 @@ void GxDEPG0290B::drawBitmap(const uint8_t *bitmap, uint32_t size, int16_t mode)
     // example bitmaps are made for y-decrement, x-increment, for origin on opposite corner
     // bm_flip_x for normal display (bm_flip_y would be rotated)
     if (mode & bm_default) mode |= bm_flip_x;
-    uint8_t ram_entry_mode = 0x03; // y-increment, x-increment : normal mode
+    uint8_t ram_entry_mode = 0x03; // y-increment, x-increment for normal mode
     if ((mode & bm_flip_y) && (mode & bm_flip_x)) ram_entry_mode = 0x00; // y-decrement, x-decrement
     else if (mode & bm_flip_y) ram_entry_mode = 0x01; // y-decrement, x-increment
     else if (mode & bm_flip_x) ram_entry_mode = 0x02; // y-increment, x-decrement
@@ -230,7 +237,6 @@ void GxDEPG0290B::eraseDisplay(bool using_partial_update)
             _writeData(0xFF);
         }
         delay(GxDEPG0290B_PU_DELAY);
-        _PowerOff();
     } else {
         _using_partial_mode = false; // remember
         _Init_Full(0x01);
@@ -256,7 +262,7 @@ void GxDEPG0290B::updateWindow(uint16_t x, uint16_t y, uint16_t w, uint16_t h, b
     _Init_Part(0x03);
     _SetRamArea(xs_d8, xe_d8, y % 256, y / 256, ye % 256, ye / 256); // X-source area,Y-gate area
     _SetRamPointer(xs_d8, y % 256, y / 256); // set ram
-    _waitWhileBusy();
+    _waitWhileBusy(0, 100); // needed ?
     _writeCommand(0x24);
     for (int16_t y1 = y; y1 <= ye; y1++) {
         for (int16_t x1 = xs_d8; x1 <= xe_d8; x1++) {
@@ -270,7 +276,7 @@ void GxDEPG0290B::updateWindow(uint16_t x, uint16_t y, uint16_t w, uint16_t h, b
     // update erase buffer
     _SetRamArea(xs_d8, xe_d8, y % 256, y / 256, ye % 256, ye / 256); // X-source area,Y-gate area
     _SetRamPointer(xs_d8, y % 256, y / 256); // set ram
-    _waitWhileBusy();
+    _waitWhileBusy(0, 100); // needed ?
     _writeCommand(0x24);
     for (int16_t y1 = y; y1 <= ye; y1++) {
         for (int16_t x1 = xs_d8; x1 <= xe_d8; x1++) {
@@ -302,7 +308,7 @@ void GxDEPG0290B::_writeToWindow(uint16_t xs, uint16_t ys, uint16_t xd, uint16_t
     uint16_t yse = ys + h - 1;
     _SetRamArea(xds_d8, xde_d8, yd % 256, yd / 256, yde % 256, yde / 256); // X-source area,Y-gate area
     _SetRamPointer(xds_d8, yd % 256, yd / 256); // set ram
-    _waitWhileBusy();
+    _waitWhileBusy(0, 100); // needed ?
     _writeCommand(0x24);
     for (int16_t y1 = ys; y1 <= yse; y1++) {
         for (int16_t x1 = xs / 8; x1 <= xse_d8; x1++) {
@@ -351,14 +357,16 @@ void GxDEPG0290B::updateToWindow(uint16_t xs, uint16_t ys, uint16_t xd, uint16_t
 void GxDEPG0290B::powerDown()
 {
     _using_partial_mode = false;
+    _writeCommand(0x10);
+    _writeData(0x01);
     _PowerOff();
 }
 
 void GxDEPG0290B::_writeCommand(uint8_t command)
 {
-    if (digitalRead(_busy)) {
+    if ((_busy >= 0) && digitalRead(_busy)) {
         String str = String("command 0x") + String(command, HEX);
-        _waitWhileBusy(str.c_str());
+        _waitWhileBusy(str.c_str(), 100); // needed?
     }
     IO.writeCommandTransaction(command);
 }
@@ -370,9 +378,9 @@ void GxDEPG0290B::_writeData(uint8_t data)
 
 void GxDEPG0290B::_writeCommandData(const uint8_t *pCommandData, uint8_t datalen)
 {
-    if (digitalRead(_busy)) {
+    if ((_busy >= 0) && digitalRead(_busy)) {
         String str = String("command 0x") + String(pCommandData[0], HEX);
-        _waitWhileBusy(str.c_str());
+        _waitWhileBusy(str.c_str(), 100); // needed?
     }
     IO.startTransaction();
     IO.writeCommand(*pCommandData++);
@@ -383,28 +391,30 @@ void GxDEPG0290B::_writeCommandData(const uint8_t *pCommandData, uint8_t datalen
 
 }
 
-void GxDEPG0290B::_waitWhileBusy(const char *comment)
+void GxDEPG0290B::_waitWhileBusy(const char *comment, uint16_t busy_time)
 {
-    unsigned long start = micros();
-    while (1) {
-        if (!digitalRead(_busy)) break;
-        delay(1);
-        if (micros() - start > 10000000) {
-            if (_diag_enabled) Serial.println("Busy Timeout!");
-            break;
+    if (_busy >= 0) {
+        unsigned long start = micros();
+        while (1) {
+            if (!digitalRead(_busy)) break;
+            delay(1);
+            if (micros() - start > 10000000) {
+                if (_diag_enabled) Serial.println("Busy Timeout!");
+                break;
+            }
         }
-    }
-    if (comment) {
+        if (comment) {
 #if !defined(DISABLE_DIAGNOSTIC_OUTPUT)
-        if (_diag_enabled) {
-            unsigned long elapsed = micros() - start;
-            Serial.print(comment);
-            Serial.print(" : ");
-            Serial.println(elapsed);
-        }
+            if (_diag_enabled) {
+                unsigned long elapsed = micros() - start;
+                Serial.print(comment);
+                Serial.print(" : ");
+                Serial.println(elapsed);
+            }
 #endif
-    }
-    (void) start;
+        }
+        (void) start;
+    } else delay(busy_time);
 }
 
 void GxDEPG0290B::_setRamDataEntryMode(uint8_t em)
@@ -437,7 +447,7 @@ void GxDEPG0290B::_setRamDataEntryMode(uint8_t em)
 void GxDEPG0290B::_SetRamArea(uint8_t Xstart, uint8_t Xend, uint8_t Ystart, uint8_t Ystart1, uint8_t Yend, uint8_t Yend1)
 {
     _writeCommand(0x44);
-    _writeData(Xstart + 1);
+    _writeData(Xstart + 1 );
     _writeData(Xend + 1);
     _writeCommand(0x45);
     _writeData(Ystart);
@@ -449,7 +459,7 @@ void GxDEPG0290B::_SetRamArea(uint8_t Xstart, uint8_t Xend, uint8_t Ystart, uint
 void GxDEPG0290B::_SetRamPointer(uint8_t addrX, uint8_t addrY, uint8_t addrY1)
 {
     _writeCommand(0x4e);
-    _writeData(addrX + 1 );
+    _writeData(addrX + 1);
     _writeCommand(0x4f);
     _writeData(addrY);
     _writeData(addrY1);
@@ -457,16 +467,29 @@ void GxDEPG0290B::_SetRamPointer(uint8_t addrX, uint8_t addrY, uint8_t addrY1)
 
 void GxDEPG0290B::_PowerOn(void)
 {
+    // _writeCommand(0x22);
+    // _writeData(0xc0);
+    // _writeCommand(0x20);
+    // _waitWhileBusy("_PowerOn", power_on_time);
 }
 
 void GxDEPG0290B::_PowerOff(void)
 {
+    // _writeCommand(0x22);
+    // _writeData(0xc3);
+    // _writeCommand(0x20);
+    // _waitWhileBusy("_PowerOff", power_off_time);
 }
 
 void GxDEPG0290B::_InitDisplay(uint8_t em)
 {
-    _writeData(0x12);
-    _waitWhileBusy("_InitDisplay");
+    // _writeCommandData(GDOControl, sizeof(GDOControl));  // Pannel configuration, Gate selection
+    // _writeCommandData(softstart, sizeof(softstart));  // X decrease, Y decrease
+    // _writeCommandData(VCOMVol, sizeof(VCOMVol));    // VCOM setting
+    // _writeCommandData(DummyLine, sizeof(DummyLine));  // dummy line per gate
+    // _writeCommandData(Gatetime, sizeof(Gatetime));    // Gate time setting
+    _writeCommand(0x12);
+    _waitWhileBusy("", 1000);
     _setRamDataEntryMode(em);
 }
 
@@ -479,20 +502,61 @@ void GxDEPG0290B::_Init_Full(uint8_t em)
 void GxDEPG0290B::_Init_Part(uint8_t em)
 {
     _InitDisplay(em);
-    // _writeCommandData()
+    _writeCommandData(LUTDefault_part, sizeof(LUTDefault_part));
+
+    _writeCommand(0x3F);
+    _writeData(0x22);
+    _writeCommand(0x03);
+    _writeData(0x17);
+
+    _writeCommand(0x04);
+    _writeData(0x41);
+    _writeData(0xB0);
+    _writeData(0x32);
+
+    _writeCommand(0x2C);
+    _writeData(0x36);
+
+    _writeCommand(0x37);
+    _writeData(0x00);
+    _writeData(0x00);
+    _writeData(0x00);
+    _writeData(0x00);
+    _writeData(0x00);
+    _writeData(0x40);
+    _writeData(0x00);
+    _writeData(0x00);
+    _writeData(0x00);
+    _writeData(0x00);
+
+    _writeCommand(0x3C);
+    _writeData(0x80);
+
+    _writeCommand(0x22);
+    _writeData(0xC0);
+    _writeCommand(0x20);
+    _waitWhileBusy("_Update_Part", 1000);
+
     _PowerOn();
 }
 
 void GxDEPG0290B::_Update_Full(void)
 {
+    // _writeCommand(0x22);
+    // _writeData(0xc4);
     _writeCommand(0x20);
-    _waitWhileBusy("_Update_Full");
+    _waitWhileBusy("_Update_Full", full_refresh_time);
+    // _writeCommand(0xff);
 }
 
 void GxDEPG0290B::_Update_Part(void)
 {
+    _writeCommand(0x22);
+    _writeData(0xCF);
+    // _writeData(0x04);
     _writeCommand(0x20);
-    _waitWhileBusy("_Update_Part");
+    _waitWhileBusy("_Update_Part", partial_refresh_time);
+    // _writeCommand(0xff);
 }
 
 void GxDEPG0290B::drawPaged(void (*drawCallback)(void))
@@ -758,7 +822,6 @@ void GxDEPG0290B::drawPagedToWindow(void (*drawCallback)(const void *, const voi
 void GxDEPG0290B::drawCornerTest(uint8_t em)
 {
     if (_current_page != -1) return;
-    _using_partial_mode = false;
     _Init_Full(em);
     _writeCommand(0x24);
     for (uint32_t y = 0; y < GxDEPG0290B_HEIGHT; y++) {

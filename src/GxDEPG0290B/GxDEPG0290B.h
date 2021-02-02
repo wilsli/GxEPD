@@ -1,7 +1,7 @@
-// class GxDEPG0290B : Display class for GDEH029A1 e-Paper from Dalian Good Display Co., Ltd.: www.good-display.com
+// class GxDEPG0290B : Display class for GDEP015OC1 e-Paper from Dalian Good Display Co., Ltd.: www.good-display.com
 //
 // based on Demo Example from Good Display, available here: http://www.good-display.com/download_detail/downloadsId=515.html
-// Controller: IL3820 : http://www.good-display.com/download_detail/downloadsId=540.html
+// Controller : IL3829 : http://www.good-display.com/download_detail/downloadsId=534.html
 //
 // Author : J-M Zingg
 //
@@ -14,14 +14,14 @@
 #ifndef _GxDEPG0290B_H_
 #define _GxDEPG0290B_H_
 
+#include <Arduino.h>
 #include "../GxEPD.h"
 
 // the physical number of pixels (for controller parameter)
 #define GxDEPG0290B_X_PIXELS 128
 #define GxDEPG0290B_Y_PIXELS 296
 
-// the logical width and height of the display
-#define GxDEPG0290B_WIDTH GxDEPG0290B_X_PIXELS
+#define GxDEPG0290B_WIDTH  GxDEPG0290B_X_PIXELS
 #define GxDEPG0290B_HEIGHT GxDEPG0290B_Y_PIXELS
 
 #define GxDEPG0290B_BUFFER_SIZE (uint32_t(GxDEPG0290B_WIDTH) * uint32_t(GxDEPG0290B_HEIGHT) / 8)
@@ -69,7 +69,7 @@ public:
     void drawPagedToWindow(void (*drawCallback)(const void *), uint16_t x, uint16_t y, uint16_t w, uint16_t h, const void *);
     void drawPagedToWindow(void (*drawCallback)(const void *, const void *), uint16_t x, uint16_t y, uint16_t w, uint16_t h, const void *, const void *);
     void drawCornerTest(uint8_t em = 0x01);
-// private:
+private:
     template <typename T> static inline void
     swap(T &a, T &b)
     {
@@ -85,7 +85,7 @@ public:
     void _SetRamArea(uint8_t Xstart, uint8_t Xend, uint8_t Ystart, uint8_t Ystart1, uint8_t Yend, uint8_t Yend1);
     void _PowerOn(void);
     void _PowerOff(void);
-    void _waitWhileBusy(const char *comment = 0);
+    void _waitWhileBusy(const char *comment, uint16_t busy_time);
     void _setRamDataEntryMode(uint8_t em);
     void _InitDisplay(uint8_t em);
     void _Init_Full(uint8_t em);
@@ -106,13 +106,17 @@ private:
     bool _diag_enabled;
     int8_t _rst;
     int8_t _busy;
-    static const uint8_t LUTDefault_full[];
     static const uint8_t LUTDefault_part[];
+    static const uint8_t LUTDefault_full[];
     static const uint8_t GDOControl[];
     static const uint8_t softstart[];
     static const uint8_t VCOMVol[];
     static const uint8_t DummyLine[];
     static const uint8_t Gatetime[];
+    static const uint16_t power_on_time = 80; // ms, e.g. 73508us
+    static const uint16_t power_off_time = 80; // ms, e.g. 68982us
+    static const uint16_t full_refresh_time = 1200; // ms, e.g. 1113273us
+    static const uint16_t partial_refresh_time = 300; // ms, e.g. 290867us
 #if defined(ESP8266) || defined(ESP32)
 public:
     // the compiler of these packages has a problem with signature matching to base classes
@@ -132,4 +136,6 @@ public:
 #endif
 
 #endif
+
+
 
