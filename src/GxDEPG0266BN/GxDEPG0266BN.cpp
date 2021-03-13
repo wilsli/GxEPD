@@ -1,4 +1,4 @@
-// class GxDEPG0290B : Display class for GDEP015OC1 e-Paper from Dalian Good Display Co., Ltd.: www.good-display.com
+// class GxDEPG0266BN : Display class for GDEP015OC1 e-Paper from Dalian Good Display Co., Ltd.: www.good-display.com
 //
 // based on Demo Example from Good Display, available here: http://www.good-display.com/download_detail/downloadsId=515.html
 // Controller : IL3829 : http://www.good-display.com/download_detail/downloadsId=534.html
@@ -11,7 +11,7 @@
 //
 // Library: https://github.com/ZinggJM/GxEPD
 
-#include "GxDEPG0290B.h"
+#include "GxDEPG0266BN.h"
 
 //#define DISABLE_DIAGNOSTIC_OUTPUT
 
@@ -22,24 +22,21 @@
 #endif
 
 // Partial Update Delay, may have an influence on degradation
-#define GxDEPG0290B_PU_DELAY 300
+#define GxDEPG0266BN_PU_DELAY 300
 
 
-const uint8_t GxDEPG0290B::LUTDefault_part[] = {
+const uint8_t GxDEPG0266BN::LUTDefault_part[] = {
     0x32,
     0x00, 0x40, 0x00, 0x00, 0x00, 0x00, 0x00,
-    0x00, 0x00, 0x00, 0x00, 0x00,
-    0x80, 0x80, 0x00, 0x00, 0x00, 0x00, 0x00,
-    0x00, 0x00, 0x00, 0x00, 0x00,
-    0x40, 0x40, 0x00, 0x00, 0x00, 0x00, 0x00,
-    0x00, 0x00, 0x00, 0x00, 0x00,
-    0x00, 0x80, 0x00, 0x00, 0x00, 0x00, 0x00,
-    0x00, 0x00, 0x00, 0x00, 0x00,
+    0x00, 0x00, 0x00, 0x00, 0x00, 0x80, 0x80,
     0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    0x00, 0x00, 0x00, 0x00, 0x00,
-    0x0A, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02,
-    0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+    0x00, 0x00, 0x00, 0x40, 0x40, 0x00, 0x00,
+    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+    0x00, 0x00, 0x80, 0x00, 0x00, 0x00, 0x00,
+    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+    0x00, 0x00, 0x00, 0x00, 0x0F, 0x00, 0x00,
+    0x00, 0x00, 0x00, 0x01, 0x01, 0x01, 0x00,
     0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
@@ -49,20 +46,20 @@ const uint8_t GxDEPG0290B::LUTDefault_part[] = {
     0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    0x22, 0x22, 0x22, 0x22, 0x22, 0x22, 0x00,
-    0x00, 0x00, //0x22, 0x17, 0x41, 0xB0, 0x32,
-    // 0x36,
+    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+    0x00, 0x00, 0x00, 0x00, 0x22, 0x22, 0x22,
+    0x22, 0x22, 0x22, 0x00, 0x00, 0x00,
+    0x22, 0x17, 0x41, 0xB0, 0x32, 0x45,
 };
 
-
-GxDEPG0290B::GxDEPG0290B(GxIO &io, int8_t rst, int8_t busy) :
-    GxEPD(GxDEPG0290B_WIDTH, GxDEPG0290B_HEIGHT), IO(io),
+GxDEPG0266BN::GxDEPG0266BN(GxIO &io, int8_t rst, int8_t busy) :
+    GxEPD(GxDEPG0266BN_WIDTH, GxDEPG0266BN_HEIGHT), IO(io),
     _current_page(-1), _using_partial_mode(false), _diag_enabled(false),
     _rst(rst), _busy(busy)
 {
 }
 
-void GxDEPG0290B::drawPixel(int16_t x, int16_t y, uint16_t color)
+void GxDEPG0266BN::drawPixel(int16_t x, int16_t y, uint16_t color)
 {
     if ((x < 0) || (x >= width()) || (y < 0) || (y >= height())) return;
 
@@ -70,24 +67,24 @@ void GxDEPG0290B::drawPixel(int16_t x, int16_t y, uint16_t color)
     switch (getRotation()) {
     case 1:
         swap(x, y);
-        x = GxDEPG0290B_WIDTH - x - 1;
+        x = GxDEPG0266BN_WIDTH - x - 1;
         break;
     case 2:
-        x = GxDEPG0290B_WIDTH - x - 1;
-        y = GxDEPG0290B_HEIGHT - y - 1;
+        x = GxDEPG0266BN_WIDTH - x - 1;
+        y = GxDEPG0266BN_HEIGHT - y - 1;
         break;
     case 3:
         swap(x, y);
-        y = GxDEPG0290B_HEIGHT - y - 1;
+        y = GxDEPG0266BN_HEIGHT - y - 1;
         break;
     }
-    uint16_t i = x / 8 + y * GxDEPG0290B_WIDTH / 8;
+    uint16_t i = x / 8 + y * GxDEPG0266BN_WIDTH / 8;
     if (_current_page < 1) {
         if (i >= sizeof(_buffer)) return;
     } else {
-        y -= _current_page * GxDEPG0290B_PAGE_HEIGHT;
-        if ((y < 0) || (y >= GxDEPG0290B_PAGE_HEIGHT)) return;
-        i = x / 8 + y * GxDEPG0290B_WIDTH / 8;
+        y -= _current_page * GxDEPG0266BN_PAGE_HEIGHT;
+        if ((y < 0) || (y >= GxDEPG0266BN_PAGE_HEIGHT)) return;
+        i = x / 8 + y * GxDEPG0266BN_WIDTH / 8;
     }
 
     if (!color)
@@ -96,7 +93,7 @@ void GxDEPG0290B::drawPixel(int16_t x, int16_t y, uint16_t color)
         _buffer[i] = (_buffer[i] & (0xFF ^ (1 << (7 - x % 8))));
 }
 
-void GxDEPG0290B::init(uint32_t serial_diag_bitrate)
+void GxDEPG0266BN::init(uint32_t serial_diag_bitrate)
 {
     if (serial_diag_bitrate > 0) {
         Serial.begin(serial_diag_bitrate);
@@ -118,7 +115,7 @@ void GxDEPG0290B::init(uint32_t serial_diag_bitrate)
     _using_partial_mode = false;
 }
 
-void GxDEPG0290B::fillScreen(uint16_t color)
+void GxDEPG0266BN::fillScreen(uint16_t color)
 {
     uint8_t data = (color == GxEPD_BLACK) ? 0xFF : 0x00;
     for (uint16_t x = 0; x < sizeof(_buffer); x++) {
@@ -126,15 +123,15 @@ void GxDEPG0290B::fillScreen(uint16_t color)
     }
 }
 
-void GxDEPG0290B::update(void)
+void GxDEPG0266BN::update(void)
 {
     if (_current_page != -1) return;
     _using_partial_mode = false;
     _Init_Full(0x03);
     _writeCommand(0x24);
-    for (uint16_t y = 0; y < GxDEPG0290B_HEIGHT; y++) {
-        for (uint16_t x = 0; x < GxDEPG0290B_WIDTH / 8; x++) {
-            uint16_t idx = y * (GxDEPG0290B_WIDTH / 8) + x;
+    for (uint16_t y = 0; y < GxDEPG0266BN_HEIGHT; y++) {
+        for (uint16_t x = 0; x < GxDEPG0266BN_WIDTH / 8; x++) {
+            uint16_t idx = y * (GxDEPG0266BN_WIDTH / 8) + x;
             uint8_t data = (idx < sizeof(_buffer)) ? _buffer[idx] : 0x00;
             _writeData(~data);
         }
@@ -143,13 +140,13 @@ void GxDEPG0290B::update(void)
     _PowerOff();
 }
 
-void  GxDEPG0290B::drawBitmap(const uint8_t *bitmap, uint16_t x, uint16_t y, uint16_t w, uint16_t h, uint16_t color, int16_t mode)
+void  GxDEPG0266BN::drawBitmap(const uint8_t *bitmap, uint16_t x, uint16_t y, uint16_t w, uint16_t h, uint16_t color, int16_t mode)
 {
     if (mode & bm_default) mode |= bm_flip_x | bm_invert;
     drawBitmapBM(bitmap, x, y, w, h, color, mode);
 }
 
-void GxDEPG0290B::drawBitmap(const uint8_t *bitmap, uint32_t size, int16_t mode)
+void GxDEPG0266BN::drawBitmap(const uint8_t *bitmap, uint32_t size, int16_t mode)
 {
     if (_current_page != -1) return;
     // example bitmaps are made for y-decrement, x-increment, for origin on opposite corner
@@ -163,7 +160,7 @@ void GxDEPG0290B::drawBitmap(const uint8_t *bitmap, uint32_t size, int16_t mode)
         _using_partial_mode = true; // remember
         _Init_Part(ram_entry_mode);
         _writeCommand(0x24);
-        for (uint32_t i = 0; i < GxDEPG0290B_BUFFER_SIZE; i++) {
+        for (uint32_t i = 0; i < GxDEPG0266BN_BUFFER_SIZE; i++) {
             uint8_t data = 0xFF; // white is 0xFF on device
             if (i < size) {
 #if defined(__AVR) || defined(ESP8266) || defined(ESP32)
@@ -176,10 +173,10 @@ void GxDEPG0290B::drawBitmap(const uint8_t *bitmap, uint32_t size, int16_t mode)
             _writeData(data);
         }
         _Update_Part();
-        delay(GxDEPG0290B_PU_DELAY);
+        delay(GxDEPG0266BN_PU_DELAY);
         // update erase buffer
         _writeCommand(0x24);
-        for (uint32_t i = 0; i < GxDEPG0290B_BUFFER_SIZE; i++) {
+        for (uint32_t i = 0; i < GxDEPG0266BN_BUFFER_SIZE; i++) {
             uint8_t data = 0xFF; // white is 0xFF on device
             if (i < size) {
 #if defined(__AVR) || defined(ESP8266) || defined(ESP32)
@@ -191,13 +188,13 @@ void GxDEPG0290B::drawBitmap(const uint8_t *bitmap, uint32_t size, int16_t mode)
             }
             _writeData(data);
         }
-        delay(GxDEPG0290B_PU_DELAY);
+        delay(GxDEPG0266BN_PU_DELAY);
         _PowerOff();
     } else {
         _using_partial_mode = false; // remember
         _Init_Full(ram_entry_mode);
         _writeCommand(0x24);
-        for (uint32_t i = 0; i < GxDEPG0290B_BUFFER_SIZE; i++) {
+        for (uint32_t i = 0; i < GxDEPG0266BN_BUFFER_SIZE; i++) {
             uint8_t data = 0xFF; // white is 0xFF on device
             if (i < size) {
 #if defined(__AVR) || defined(ESP8266) || defined(ESP32)
@@ -214,29 +211,29 @@ void GxDEPG0290B::drawBitmap(const uint8_t *bitmap, uint32_t size, int16_t mode)
     }
 }
 
-void GxDEPG0290B::eraseDisplay(bool using_partial_update)
+void GxDEPG0266BN::eraseDisplay(bool using_partial_update)
 {
     if (_current_page != -1) return;
     if (using_partial_update) {
         _using_partial_mode = true; // remember
         _Init_Part(0x01);
         _writeCommand(0x24);
-        for (uint32_t i = 0; i < GxDEPG0290B_BUFFER_SIZE; i++) {
+        for (uint32_t i = 0; i < GxDEPG0266BN_BUFFER_SIZE; i++) {
             _writeData(0xFF);
         }
         _Update_Part();
-        delay(GxDEPG0290B_PU_DELAY);
+        delay(GxDEPG0266BN_PU_DELAY);
         // update erase buffer
         _writeCommand(0x24);
-        for (uint32_t i = 0; i < GxDEPG0290B_BUFFER_SIZE; i++) {
+        for (uint32_t i = 0; i < GxDEPG0266BN_BUFFER_SIZE; i++) {
             _writeData(0xFF);
         }
-        delay(GxDEPG0290B_PU_DELAY);
+        delay(GxDEPG0266BN_PU_DELAY);
     } else {
         _using_partial_mode = false; // remember
         _Init_Full(0x01);
         _writeCommand(0x24);
-        for (uint32_t i = 0; i < GxDEPG0290B_BUFFER_SIZE; i++) {
+        for (uint32_t i = 0; i < GxDEPG0266BN_BUFFER_SIZE; i++) {
             _writeData(0xFF);
         }
         _Update_Full();
@@ -244,14 +241,14 @@ void GxDEPG0290B::eraseDisplay(bool using_partial_update)
     }
 }
 
-void GxDEPG0290B::updateWindow(uint16_t x, uint16_t y, uint16_t w, uint16_t h, bool using_rotation)
+void GxDEPG0266BN::updateWindow(uint16_t x, uint16_t y, uint16_t w, uint16_t h, bool using_rotation)
 {
     if (_current_page != -1) return;
     if (using_rotation) _rotate(x, y, w, h);
-    if (x >= GxDEPG0290B_WIDTH) return;
-    if (y >= GxDEPG0290B_HEIGHT) return;
-    uint16_t xe = gx_uint16_min(GxDEPG0290B_WIDTH, x + w) - 1;
-    uint16_t ye = gx_uint16_min(GxDEPG0290B_HEIGHT, y + h) - 1;
+    if (x >= GxDEPG0266BN_WIDTH) return;
+    if (y >= GxDEPG0266BN_HEIGHT) return;
+    uint16_t xe = gx_uint16_min(GxDEPG0266BN_WIDTH, x + w) - 1;
+    uint16_t ye = gx_uint16_min(GxDEPG0266BN_HEIGHT, y + h) - 1;
     uint16_t xs_d8 = x / 8;
     uint16_t xe_d8 = xe / 8;
     _Init_Part(0x03);
@@ -261,13 +258,13 @@ void GxDEPG0290B::updateWindow(uint16_t x, uint16_t y, uint16_t w, uint16_t h, b
     _writeCommand(0x24);
     for (int16_t y1 = y; y1 <= ye; y1++) {
         for (int16_t x1 = xs_d8; x1 <= xe_d8; x1++) {
-            uint16_t idx = y1 * (GxDEPG0290B_WIDTH / 8) + x1;
+            uint16_t idx = y1 * (GxDEPG0266BN_WIDTH / 8) + x1;
             uint8_t data = (idx < sizeof(_buffer)) ? _buffer[idx] : 0x00;
             _writeData(~data);
         }
     }
     _Update_Part();
-    delay(GxDEPG0290B_PU_DELAY);
+    delay(GxDEPG0266BN_PU_DELAY);
     // update erase buffer
     _SetRamArea(xs_d8, xe_d8, y % 256, y / 256, ye % 256, ye / 256); // X-source area,Y-gate area
     _SetRamPointer(xs_d8, y % 256, y / 256); // set ram
@@ -275,26 +272,26 @@ void GxDEPG0290B::updateWindow(uint16_t x, uint16_t y, uint16_t w, uint16_t h, b
     _writeCommand(0x24);
     for (int16_t y1 = y; y1 <= ye; y1++) {
         for (int16_t x1 = xs_d8; x1 <= xe_d8; x1++) {
-            uint16_t idx = y1 * (GxDEPG0290B_WIDTH / 8) + x1;
+            uint16_t idx = y1 * (GxDEPG0266BN_WIDTH / 8) + x1;
             uint8_t data = (idx < sizeof(_buffer)) ? _buffer[idx] : 0x00;
             _writeData(~data);
         }
     }
-    delay(GxDEPG0290B_PU_DELAY);
+    delay(GxDEPG0266BN_PU_DELAY);
 }
 
-void GxDEPG0290B::_writeToWindow(uint16_t xs, uint16_t ys, uint16_t xd, uint16_t yd, uint16_t w, uint16_t h)
+void GxDEPG0266BN::_writeToWindow(uint16_t xs, uint16_t ys, uint16_t xd, uint16_t yd, uint16_t w, uint16_t h)
 {
     //Serial.printf("_writeToWindow(%d, %d, %d, %d, %d, %d)\n", xs, ys, xd, yd, w, h);
     // the screen limits are the hard limits
-    if (xs >= GxDEPG0290B_WIDTH) return;
-    if (ys >= GxDEPG0290B_HEIGHT) return;
-    if (xd >= GxDEPG0290B_WIDTH) return;
-    if (yd >= GxDEPG0290B_HEIGHT) return;
-    w = gx_uint16_min(w, GxDEPG0290B_WIDTH - xs);
-    w = gx_uint16_min(w, GxDEPG0290B_WIDTH - xd);
-    h = gx_uint16_min(h, GxDEPG0290B_HEIGHT - ys);
-    h = gx_uint16_min(h, GxDEPG0290B_HEIGHT - yd);
+    if (xs >= GxDEPG0266BN_WIDTH) return;
+    if (ys >= GxDEPG0266BN_HEIGHT) return;
+    if (xd >= GxDEPG0266BN_WIDTH) return;
+    if (yd >= GxDEPG0266BN_HEIGHT) return;
+    w = gx_uint16_min(w, GxDEPG0266BN_WIDTH - xs);
+    w = gx_uint16_min(w, GxDEPG0266BN_WIDTH - xd);
+    h = gx_uint16_min(h, GxDEPG0266BN_HEIGHT - ys);
+    h = gx_uint16_min(h, GxDEPG0266BN_HEIGHT - yd);
     uint16_t xds_d8 = xd / 8;
     uint16_t xde_d8 = (xd + w - 1) / 8;
     uint16_t yde = yd + h - 1;
@@ -307,14 +304,14 @@ void GxDEPG0290B::_writeToWindow(uint16_t xs, uint16_t ys, uint16_t xd, uint16_t
     _writeCommand(0x24);
     for (int16_t y1 = ys; y1 <= yse; y1++) {
         for (int16_t x1 = xs / 8; x1 <= xse_d8; x1++) {
-            uint16_t idx = y1 * (GxDEPG0290B_WIDTH / 8) + x1;
+            uint16_t idx = y1 * (GxDEPG0266BN_WIDTH / 8) + x1;
             uint8_t data = (idx < sizeof(_buffer)) ? _buffer[idx] : 0x00;
             _writeData(~data);
         }
     }
 }
 
-void GxDEPG0290B::updateToWindow(uint16_t xs, uint16_t ys, uint16_t xd, uint16_t yd, uint16_t w, uint16_t h, bool using_rotation)
+void GxDEPG0266BN::updateToWindow(uint16_t xs, uint16_t ys, uint16_t xd, uint16_t yd, uint16_t w, uint16_t h, bool using_rotation)
 {
     if (using_rotation) {
         switch (getRotation()) {
@@ -322,34 +319,34 @@ void GxDEPG0290B::updateToWindow(uint16_t xs, uint16_t ys, uint16_t xd, uint16_t
             swap(xs, ys);
             swap(xd, yd);
             swap(w, h);
-            xs = GxDEPG0290B_WIDTH - xs - w - 1;
-            xd = GxDEPG0290B_WIDTH - xd - w - 1;
+            xs = GxDEPG0266BN_WIDTH - xs - w - 1;
+            xd = GxDEPG0266BN_WIDTH - xd - w - 1;
             break;
         case 2:
-            xs = GxDEPG0290B_WIDTH - xs - w - 1;
-            ys = GxDEPG0290B_HEIGHT - ys - h - 1;
-            xd = GxDEPG0290B_WIDTH - xd - w - 1;
-            yd = GxDEPG0290B_HEIGHT - yd - h - 1;
+            xs = GxDEPG0266BN_WIDTH - xs - w - 1;
+            ys = GxDEPG0266BN_HEIGHT - ys - h - 1;
+            xd = GxDEPG0266BN_WIDTH - xd - w - 1;
+            yd = GxDEPG0266BN_HEIGHT - yd - h - 1;
             break;
         case 3:
             swap(xs, ys);
             swap(xd, yd);
             swap(w, h);
-            ys = GxDEPG0290B_HEIGHT - ys  - h - 1;
-            yd = GxDEPG0290B_HEIGHT - yd  - h - 1;
+            ys = GxDEPG0266BN_HEIGHT - ys  - h - 1;
+            yd = GxDEPG0266BN_HEIGHT - yd  - h - 1;
             break;
         }
     }
     _Init_Part(0x03);
     _writeToWindow(xs, ys, xd, yd, w, h);
     _Update_Part();
-    delay(GxDEPG0290B_PU_DELAY);
+    delay(GxDEPG0266BN_PU_DELAY);
     // update erase buffer
     _writeToWindow(xs, ys, xd, yd, w, h);
-    delay(GxDEPG0290B_PU_DELAY);
+    delay(GxDEPG0266BN_PU_DELAY);
 }
 
-void GxDEPG0290B::powerDown()
+void GxDEPG0266BN::powerDown()
 {
     _using_partial_mode = false;
     _writeCommand(0x10);
@@ -357,7 +354,7 @@ void GxDEPG0290B::powerDown()
     _PowerOff();
 }
 
-void GxDEPG0290B::_writeCommand(uint8_t command)
+void GxDEPG0266BN::_writeCommand(uint8_t command)
 {
     if ((_busy >= 0) && digitalRead(_busy)) {
         String str = String("command 0x") + String(command, HEX);
@@ -366,12 +363,12 @@ void GxDEPG0290B::_writeCommand(uint8_t command)
     IO.writeCommandTransaction(command);
 }
 
-void GxDEPG0290B::_writeData(uint8_t data)
+void GxDEPG0266BN::_writeData(uint8_t data)
 {
     IO.writeDataTransaction(data);
 }
 
-void GxDEPG0290B::_writeCommandData(const uint8_t *pCommandData, uint8_t datalen)
+void GxDEPG0266BN::_writeCommandData(const uint8_t *pCommandData, uint8_t datalen)
 {
     if ((_busy >= 0) && digitalRead(_busy)) {
         String str = String("command 0x") + String(pCommandData[0], HEX);
@@ -386,7 +383,7 @@ void GxDEPG0290B::_writeCommandData(const uint8_t *pCommandData, uint8_t datalen
 
 }
 
-void GxDEPG0290B::_waitWhileBusy(const char *comment, uint16_t busy_time)
+void GxDEPG0266BN::_waitWhileBusy(const char *comment, uint16_t busy_time)
 {
     if (_busy >= 0) {
         unsigned long start = micros();
@@ -412,10 +409,10 @@ void GxDEPG0290B::_waitWhileBusy(const char *comment, uint16_t busy_time)
     } else delay(busy_time);
 }
 
-void GxDEPG0290B::_setRamDataEntryMode(uint8_t em)
+void GxDEPG0266BN::_setRamDataEntryMode(uint8_t em)
 {
-    const uint16_t xPixelsPar = GxDEPG0290B_X_PIXELS - 1;
-    const uint16_t yPixelsPar = GxDEPG0290B_Y_PIXELS - 1;
+    const uint16_t xPixelsPar = GxDEPG0266BN_X_PIXELS - 1;
+    const uint16_t yPixelsPar = GxDEPG0266BN_Y_PIXELS - 1;
     em = gx_uint16_min(em, 0x03);
     _writeCommand(0x11);
     _writeData(em);
@@ -439,7 +436,7 @@ void GxDEPG0290B::_setRamDataEntryMode(uint8_t em)
     }
 }
 
-void GxDEPG0290B::_SetRamArea(uint8_t Xstart, uint8_t Xend, uint8_t Ystart, uint8_t Ystart1, uint8_t Yend, uint8_t Yend1)
+void GxDEPG0266BN::_SetRamArea(uint8_t Xstart, uint8_t Xend, uint8_t Ystart, uint8_t Ystart1, uint8_t Yend, uint8_t Yend1)
 {
     _writeCommand(0x44);
     _writeData(Xstart + 1 );
@@ -451,7 +448,7 @@ void GxDEPG0290B::_SetRamArea(uint8_t Xstart, uint8_t Xend, uint8_t Ystart, uint
     _writeData(Yend1);
 }
 
-void GxDEPG0290B::_SetRamPointer(uint8_t addrX, uint8_t addrY, uint8_t addrY1)
+void GxDEPG0266BN::_SetRamPointer(uint8_t addrX, uint8_t addrY, uint8_t addrY1)
 {
     _writeCommand(0x4e);
     _writeData(addrX + 1);
@@ -460,49 +457,49 @@ void GxDEPG0290B::_SetRamPointer(uint8_t addrX, uint8_t addrY, uint8_t addrY1)
     _writeData(addrY1);
 }
 
-void GxDEPG0290B::_PowerOn(void)
+void GxDEPG0266BN::_PowerOn(void)
 {
-    // _writeCommand(0x22);
-    // _writeData(0xc0);
-    // _writeCommand(0x20);
-    // _waitWhileBusy("_PowerOn", power_on_time);
 }
 
-void GxDEPG0290B::_PowerOff(void)
+void GxDEPG0266BN::_PowerOff(void)
 {
-
+    _writeCommand(0x10);
+    _writeData(0x01);
 }
 
-void GxDEPG0290B::_InitDisplay(uint8_t em)
+void GxDEPG0266BN::_InitDisplay(uint8_t em)
 {
+    if (_rst >= 0) {
+        pinMode(_rst, OUTPUT);
+        digitalWrite(_rst, LOW);
+        delay(10);
+        digitalWrite(_rst, HIGH);
+        delay(10);
+        _waitWhileBusy("", 10000);
+    }
+
     _writeCommand(0x12);
-    _waitWhileBusy("", 1000);
+    _waitWhileBusy("", 10000);
+
+    _writeCommand(0x3C);
+    _writeData(0x03);
+
     _setRamDataEntryMode(em);
 }
 
-void GxDEPG0290B::_Init_Full(uint8_t em)
+void GxDEPG0266BN::_Init_Full(uint8_t em)
 {
     _InitDisplay(em);
     _PowerOn();
 }
 
-void GxDEPG0290B::_Init_Part(uint8_t em)
+void GxDEPG0266BN::_Init_Part(uint8_t em)
 {
     _InitDisplay(em);
-    _writeCommandData(LUTDefault_part, sizeof(LUTDefault_part));
 
-    _writeCommand(0x3F);
-    _writeData(0x22);
-    _writeCommand(0x03);
-    _writeData(0x17);
+    _waitWhileBusy("_Update_Part", 1000);
 
-    _writeCommand(0x04);
-    _writeData(0x41);
-    _writeData(0xB0);
-    _writeData(0x32);
-
-    _writeCommand(0x2C);
-    _writeData(0x36);
+    _writeCommandData(LUTDefault_part, 154);
 
     _writeCommand(0x37);
     _writeData(0x00);
@@ -522,42 +519,39 @@ void GxDEPG0290B::_Init_Part(uint8_t em)
     _writeCommand(0x22);
     _writeData(0xC0);
     _writeCommand(0x20);
-    _waitWhileBusy("_Update_Part", 1000);
 
+    _waitWhileBusy("_Update_Part", 1000);
     _PowerOn();
 }
 
-void GxDEPG0290B::_Update_Full(void)
-{
-    // _writeCommand(0x22);
-    // _writeData(0xc4);
-    _writeCommand(0x20);
-    _waitWhileBusy("_Update_Full", full_refresh_time);
-    // _writeCommand(0xff);
-}
-
-void GxDEPG0290B::_Update_Part(void)
+void GxDEPG0266BN::_Update_Full(void)
 {
     _writeCommand(0x22);
-    _writeData(0xCF);
-    // _writeData(0x04);
+    _writeData(0xF4);
+    _writeCommand(0x20);
+    _waitWhileBusy("_Update_Full", full_refresh_time);
+}
+
+void GxDEPG0266BN::_Update_Part(void)
+{
+    _writeCommand(0x22);
+    _writeData(0x0F);
     _writeCommand(0x20);
     _waitWhileBusy("_Update_Part", partial_refresh_time);
-    // _writeCommand(0xff);
 }
 
-void GxDEPG0290B::drawPaged(void (*drawCallback)(void))
+void GxDEPG0266BN::drawPaged(void (*drawCallback)(void))
 {
     if (_current_page != -1) return;
     _using_partial_mode = false;
     _Init_Full(0x03);
     _writeCommand(0x24);
-    for (_current_page = 0; _current_page < GxDEPG0290B_PAGES; _current_page++) {
+    for (_current_page = 0; _current_page < GxDEPG0266BN_PAGES; _current_page++) {
         fillScreen(GxEPD_WHITE);
         drawCallback();
-        for (int16_t y1 = 0; y1 < GxDEPG0290B_PAGE_HEIGHT; y1++) {
-            for (int16_t x1 = 0; x1 < GxDEPG0290B_WIDTH / 8; x1++) {
-                uint16_t idx = y1 * (GxDEPG0290B_WIDTH / 8) + x1;
+        for (int16_t y1 = 0; y1 < GxDEPG0266BN_PAGE_HEIGHT; y1++) {
+            for (int16_t x1 = 0; x1 < GxDEPG0266BN_WIDTH / 8; x1++) {
+                uint16_t idx = y1 * (GxDEPG0266BN_WIDTH / 8) + x1;
                 uint8_t data = (idx < sizeof(_buffer)) ? _buffer[idx] : 0x00;
                 _writeData(~data);
             }
@@ -568,18 +562,18 @@ void GxDEPG0290B::drawPaged(void (*drawCallback)(void))
     _PowerOff();
 }
 
-void GxDEPG0290B::drawPaged(void (*drawCallback)(uint32_t), uint32_t p)
+void GxDEPG0266BN::drawPaged(void (*drawCallback)(uint32_t), uint32_t p)
 {
     if (_current_page != -1) return;
     _using_partial_mode = false;
     _Init_Full(0x03);
     _writeCommand(0x24);
-    for (_current_page = 0; _current_page < GxDEPG0290B_PAGES; _current_page++) {
+    for (_current_page = 0; _current_page < GxDEPG0266BN_PAGES; _current_page++) {
         fillScreen(GxEPD_WHITE);
         drawCallback(p);
-        for (int16_t y1 = 0; y1 < GxDEPG0290B_PAGE_HEIGHT; y1++) {
-            for (int16_t x1 = 0; x1 < GxDEPG0290B_WIDTH / 8; x1++) {
-                uint16_t idx = y1 * (GxDEPG0290B_WIDTH / 8) + x1;
+        for (int16_t y1 = 0; y1 < GxDEPG0266BN_PAGE_HEIGHT; y1++) {
+            for (int16_t x1 = 0; x1 < GxDEPG0266BN_WIDTH / 8; x1++) {
+                uint16_t idx = y1 * (GxDEPG0266BN_WIDTH / 8) + x1;
                 uint8_t data = (idx < sizeof(_buffer)) ? _buffer[idx] : 0x00;
                 _writeData(~data);
             }
@@ -590,18 +584,18 @@ void GxDEPG0290B::drawPaged(void (*drawCallback)(uint32_t), uint32_t p)
     _PowerOff();
 }
 
-void GxDEPG0290B::drawPaged(void (*drawCallback)(const void *), const void *p)
+void GxDEPG0266BN::drawPaged(void (*drawCallback)(const void *), const void *p)
 {
     if (_current_page != -1) return;
     _using_partial_mode = false;
     _Init_Full(0x03);
     _writeCommand(0x24);
-    for (_current_page = 0; _current_page < GxDEPG0290B_PAGES; _current_page++) {
+    for (_current_page = 0; _current_page < GxDEPG0266BN_PAGES; _current_page++) {
         fillScreen(GxEPD_WHITE);
         drawCallback(p);
-        for (int16_t y1 = 0; y1 < GxDEPG0290B_PAGE_HEIGHT; y1++) {
-            for (int16_t x1 = 0; x1 < GxDEPG0290B_WIDTH / 8; x1++) {
-                uint16_t idx = y1 * (GxDEPG0290B_WIDTH / 8) + x1;
+        for (int16_t y1 = 0; y1 < GxDEPG0266BN_PAGE_HEIGHT; y1++) {
+            for (int16_t x1 = 0; x1 < GxDEPG0266BN_WIDTH / 8; x1++) {
+                uint16_t idx = y1 * (GxDEPG0266BN_WIDTH / 8) + x1;
                 uint8_t data = (idx < sizeof(_buffer)) ? _buffer[idx] : 0x00;
                 _writeData(~data);
             }
@@ -612,18 +606,18 @@ void GxDEPG0290B::drawPaged(void (*drawCallback)(const void *), const void *p)
     _PowerOff();
 }
 
-void GxDEPG0290B::drawPaged(void (*drawCallback)(const void *, const void *), const void *p1, const void *p2)
+void GxDEPG0266BN::drawPaged(void (*drawCallback)(const void *, const void *), const void *p1, const void *p2)
 {
     if (_current_page != -1) return;
     _using_partial_mode = false;
     _Init_Full(0x03);
     _writeCommand(0x24);
-    for (_current_page = 0; _current_page < GxDEPG0290B_PAGES; _current_page++) {
+    for (_current_page = 0; _current_page < GxDEPG0266BN_PAGES; _current_page++) {
         fillScreen(GxEPD_WHITE);
         drawCallback(p1, p2);
-        for (int16_t y1 = 0; y1 < GxDEPG0290B_PAGE_HEIGHT; y1++) {
-            for (int16_t x1 = 0; x1 < GxDEPG0290B_WIDTH / 8; x1++) {
-                uint16_t idx = y1 * (GxDEPG0290B_WIDTH / 8) + x1;
+        for (int16_t y1 = 0; y1 < GxDEPG0266BN_PAGE_HEIGHT; y1++) {
+            for (int16_t x1 = 0; x1 < GxDEPG0266BN_WIDTH / 8; x1++) {
+                uint16_t idx = y1 * (GxDEPG0266BN_WIDTH / 8) + x1;
                 uint8_t data = (idx < sizeof(_buffer)) ? _buffer[idx] : 0x00;
                 _writeData(~data);
             }
@@ -634,27 +628,27 @@ void GxDEPG0290B::drawPaged(void (*drawCallback)(const void *, const void *), co
     _PowerOff();
 }
 
-void GxDEPG0290B::_rotate(uint16_t &x, uint16_t &y, uint16_t &w, uint16_t &h)
+void GxDEPG0266BN::_rotate(uint16_t &x, uint16_t &y, uint16_t &w, uint16_t &h)
 {
     switch (getRotation()) {
     case 1:
         swap(x, y);
         swap(w, h);
-        x = GxDEPG0290B_WIDTH - x - w - 1;
+        x = GxDEPG0266BN_WIDTH - x - w - 1;
         break;
     case 2:
-        x = GxDEPG0290B_WIDTH - x - w - 1;
-        y = GxDEPG0290B_HEIGHT - y - h - 1;
+        x = GxDEPG0266BN_WIDTH - x - w - 1;
+        y = GxDEPG0266BN_HEIGHT - y - h - 1;
         break;
     case 3:
         swap(x, y);
         swap(w, h);
-        y = GxDEPG0290B_HEIGHT - y - h - 1;
+        y = GxDEPG0266BN_HEIGHT - y - h - 1;
         break;
     }
 }
 
-void GxDEPG0290B::drawPagedToWindow(void (*drawCallback)(void), uint16_t x, uint16_t y, uint16_t w, uint16_t h)
+void GxDEPG0266BN::drawPagedToWindow(void (*drawCallback)(void), uint16_t x, uint16_t y, uint16_t w, uint16_t h)
 {
     if (_current_page != -1) return;
     _rotate(x, y, w, h);
@@ -664,35 +658,35 @@ void GxDEPG0290B::drawPagedToWindow(void (*drawCallback)(void), uint16_t x, uint
     }
     _using_partial_mode = true;
     _Init_Part(0x03);
-    for (_current_page = 0; _current_page < GxDEPG0290B_PAGES; _current_page++) {
-        uint16_t yds = gx_uint16_max(y, _current_page * GxDEPG0290B_PAGE_HEIGHT);
-        uint16_t yde = gx_uint16_min(y + h, (_current_page + 1) * GxDEPG0290B_PAGE_HEIGHT);
+    for (_current_page = 0; _current_page < GxDEPG0266BN_PAGES; _current_page++) {
+        uint16_t yds = gx_uint16_max(y, _current_page * GxDEPG0266BN_PAGE_HEIGHT);
+        uint16_t yde = gx_uint16_min(y + h, (_current_page + 1) * GxDEPG0266BN_PAGE_HEIGHT);
         if (yde > yds) {
             fillScreen(GxEPD_WHITE);
             drawCallback();
-            uint16_t ys = yds % GxDEPG0290B_PAGE_HEIGHT;
+            uint16_t ys = yds % GxDEPG0266BN_PAGE_HEIGHT;
             _writeToWindow(x, ys, x, yds, w, yde - yds);
         }
     }
     _Update_Part();
-    delay(GxDEPG0290B_PU_DELAY);
+    delay(GxDEPG0266BN_PU_DELAY);
     // update erase buffer
-    for (_current_page = 0; _current_page < GxDEPG0290B_PAGES; _current_page++) {
-        uint16_t yds = gx_uint16_max(y, _current_page * GxDEPG0290B_PAGE_HEIGHT);
-        uint16_t yde = gx_uint16_min(y + h, (_current_page + 1) * GxDEPG0290B_PAGE_HEIGHT);
+    for (_current_page = 0; _current_page < GxDEPG0266BN_PAGES; _current_page++) {
+        uint16_t yds = gx_uint16_max(y, _current_page * GxDEPG0266BN_PAGE_HEIGHT);
+        uint16_t yde = gx_uint16_min(y + h, (_current_page + 1) * GxDEPG0266BN_PAGE_HEIGHT);
         if (yde > yds) {
             fillScreen(GxEPD_WHITE);
             drawCallback();
-            uint16_t ys = yds % GxDEPG0290B_PAGE_HEIGHT;
+            uint16_t ys = yds % GxDEPG0266BN_PAGE_HEIGHT;
             _writeToWindow(x, ys, x, yds, w, yde - yds);
         }
     }
-    delay(GxDEPG0290B_PU_DELAY);
+    delay(GxDEPG0266BN_PU_DELAY);
     _current_page = -1;
     _PowerOff();
 }
 
-void GxDEPG0290B::drawPagedToWindow(void (*drawCallback)(uint32_t), uint16_t x, uint16_t y, uint16_t w, uint16_t h, uint32_t p)
+void GxDEPG0266BN::drawPagedToWindow(void (*drawCallback)(uint32_t), uint16_t x, uint16_t y, uint16_t w, uint16_t h, uint32_t p)
 {
     if (_current_page != -1) return;
     _rotate(x, y, w, h);
@@ -702,35 +696,35 @@ void GxDEPG0290B::drawPagedToWindow(void (*drawCallback)(uint32_t), uint16_t x, 
     }
     _using_partial_mode = true;
     _Init_Part(0x03);
-    for (_current_page = 0; _current_page < GxDEPG0290B_PAGES; _current_page++) {
-        uint16_t yds = gx_uint16_max(y, _current_page * GxDEPG0290B_PAGE_HEIGHT);
-        uint16_t yde = gx_uint16_min(y + h, (_current_page + 1) * GxDEPG0290B_PAGE_HEIGHT);
+    for (_current_page = 0; _current_page < GxDEPG0266BN_PAGES; _current_page++) {
+        uint16_t yds = gx_uint16_max(y, _current_page * GxDEPG0266BN_PAGE_HEIGHT);
+        uint16_t yde = gx_uint16_min(y + h, (_current_page + 1) * GxDEPG0266BN_PAGE_HEIGHT);
         if (yde > yds) {
             fillScreen(GxEPD_WHITE);
             drawCallback(p);
-            uint16_t ys = yds % GxDEPG0290B_PAGE_HEIGHT;
+            uint16_t ys = yds % GxDEPG0266BN_PAGE_HEIGHT;
             _writeToWindow(x, ys, x, yds, w, yde - yds);
         }
     }
     _Update_Part();
-    delay(GxDEPG0290B_PU_DELAY);
+    delay(GxDEPG0266BN_PU_DELAY);
     // update erase buffer
-    for (_current_page = 0; _current_page < GxDEPG0290B_PAGES; _current_page++) {
-        uint16_t yds = gx_uint16_max(y, _current_page * GxDEPG0290B_PAGE_HEIGHT);
-        uint16_t yde = gx_uint16_min(y + h, (_current_page + 1) * GxDEPG0290B_PAGE_HEIGHT);
+    for (_current_page = 0; _current_page < GxDEPG0266BN_PAGES; _current_page++) {
+        uint16_t yds = gx_uint16_max(y, _current_page * GxDEPG0266BN_PAGE_HEIGHT);
+        uint16_t yde = gx_uint16_min(y + h, (_current_page + 1) * GxDEPG0266BN_PAGE_HEIGHT);
         if (yde > yds) {
             fillScreen(GxEPD_WHITE);
             drawCallback(p);
-            uint16_t ys = yds % GxDEPG0290B_PAGE_HEIGHT;
+            uint16_t ys = yds % GxDEPG0266BN_PAGE_HEIGHT;
             _writeToWindow(x, ys, x, yds, w, yde - yds);
         }
     }
-    delay(GxDEPG0290B_PU_DELAY);
+    delay(GxDEPG0266BN_PU_DELAY);
     _current_page = -1;
     _PowerOff();
 }
 
-void GxDEPG0290B::drawPagedToWindow(void (*drawCallback)(const void *), uint16_t x, uint16_t y, uint16_t w, uint16_t h, const void *p)
+void GxDEPG0266BN::drawPagedToWindow(void (*drawCallback)(const void *), uint16_t x, uint16_t y, uint16_t w, uint16_t h, const void *p)
 {
     if (_current_page != -1) return;
     _rotate(x, y, w, h);
@@ -740,35 +734,35 @@ void GxDEPG0290B::drawPagedToWindow(void (*drawCallback)(const void *), uint16_t
     }
     _using_partial_mode = true;
     _Init_Part(0x03);
-    for (_current_page = 0; _current_page < GxDEPG0290B_PAGES; _current_page++) {
-        uint16_t yds = gx_uint16_max(y, _current_page * GxDEPG0290B_PAGE_HEIGHT);
-        uint16_t yde = gx_uint16_min(y + h, (_current_page + 1) * GxDEPG0290B_PAGE_HEIGHT);
+    for (_current_page = 0; _current_page < GxDEPG0266BN_PAGES; _current_page++) {
+        uint16_t yds = gx_uint16_max(y, _current_page * GxDEPG0266BN_PAGE_HEIGHT);
+        uint16_t yde = gx_uint16_min(y + h, (_current_page + 1) * GxDEPG0266BN_PAGE_HEIGHT);
         if (yde > yds) {
             fillScreen(GxEPD_WHITE);
             drawCallback(p);
-            uint16_t ys = yds % GxDEPG0290B_PAGE_HEIGHT;
+            uint16_t ys = yds % GxDEPG0266BN_PAGE_HEIGHT;
             _writeToWindow(x, ys, x, yds, w, yde - yds);
         }
     }
     _Update_Part();
-    delay(GxDEPG0290B_PU_DELAY);
+    delay(GxDEPG0266BN_PU_DELAY);
     // update erase buffer
-    for (_current_page = 0; _current_page < GxDEPG0290B_PAGES; _current_page++) {
-        uint16_t yds = gx_uint16_max(y, _current_page * GxDEPG0290B_PAGE_HEIGHT);
-        uint16_t yde = gx_uint16_min(y + h, (_current_page + 1) * GxDEPG0290B_PAGE_HEIGHT);
+    for (_current_page = 0; _current_page < GxDEPG0266BN_PAGES; _current_page++) {
+        uint16_t yds = gx_uint16_max(y, _current_page * GxDEPG0266BN_PAGE_HEIGHT);
+        uint16_t yde = gx_uint16_min(y + h, (_current_page + 1) * GxDEPG0266BN_PAGE_HEIGHT);
         if (yde > yds) {
             fillScreen(GxEPD_WHITE);
             drawCallback(p);
-            uint16_t ys = yds % GxDEPG0290B_PAGE_HEIGHT;
+            uint16_t ys = yds % GxDEPG0266BN_PAGE_HEIGHT;
             _writeToWindow(x, ys, x, yds, w, yde - yds);
         }
     }
-    delay(GxDEPG0290B_PU_DELAY);
+    delay(GxDEPG0266BN_PU_DELAY);
     _current_page = -1;
     _PowerOff();
 }
 
-void GxDEPG0290B::drawPagedToWindow(void (*drawCallback)(const void *, const void *), uint16_t x, uint16_t y, uint16_t w, uint16_t h, const void *p1, const void *p2)
+void GxDEPG0266BN::drawPagedToWindow(void (*drawCallback)(const void *, const void *), uint16_t x, uint16_t y, uint16_t w, uint16_t h, const void *p1, const void *p2)
 {
     if (_current_page != -1) return;
     _rotate(x, y, w, h);
@@ -778,46 +772,46 @@ void GxDEPG0290B::drawPagedToWindow(void (*drawCallback)(const void *, const voi
     }
     _using_partial_mode = true;
     _Init_Part(0x03);
-    for (_current_page = 0; _current_page < GxDEPG0290B_PAGES; _current_page++) {
-        uint16_t yds = gx_uint16_max(y, _current_page * GxDEPG0290B_PAGE_HEIGHT);
-        uint16_t yde = gx_uint16_min(y + h, (_current_page + 1) * GxDEPG0290B_PAGE_HEIGHT);
+    for (_current_page = 0; _current_page < GxDEPG0266BN_PAGES; _current_page++) {
+        uint16_t yds = gx_uint16_max(y, _current_page * GxDEPG0266BN_PAGE_HEIGHT);
+        uint16_t yde = gx_uint16_min(y + h, (_current_page + 1) * GxDEPG0266BN_PAGE_HEIGHT);
         if (yde > yds) {
             fillScreen(GxEPD_WHITE);
             drawCallback(p1, p2);
-            uint16_t ys = yds % GxDEPG0290B_PAGE_HEIGHT;
+            uint16_t ys = yds % GxDEPG0266BN_PAGE_HEIGHT;
             _writeToWindow(x, ys, x, yds, w, yde - yds);
         }
     }
     _Update_Part();
-    delay(GxDEPG0290B_PU_DELAY);
+    delay(GxDEPG0266BN_PU_DELAY);
     // update erase buffer
-    for (_current_page = 0; _current_page < GxDEPG0290B_PAGES; _current_page++) {
-        uint16_t yds = gx_uint16_max(y, _current_page * GxDEPG0290B_PAGE_HEIGHT);
-        uint16_t yde = gx_uint16_min(y + h, (_current_page + 1) * GxDEPG0290B_PAGE_HEIGHT);
+    for (_current_page = 0; _current_page < GxDEPG0266BN_PAGES; _current_page++) {
+        uint16_t yds = gx_uint16_max(y, _current_page * GxDEPG0266BN_PAGE_HEIGHT);
+        uint16_t yde = gx_uint16_min(y + h, (_current_page + 1) * GxDEPG0266BN_PAGE_HEIGHT);
         if (yde > yds) {
             fillScreen(GxEPD_WHITE);
             drawCallback(p1, p2);
-            uint16_t ys = yds % GxDEPG0290B_PAGE_HEIGHT;
+            uint16_t ys = yds % GxDEPG0266BN_PAGE_HEIGHT;
             _writeToWindow(x, ys, x, yds, w, yde - yds);
         }
     }
-    delay(GxDEPG0290B_PU_DELAY);
+    delay(GxDEPG0266BN_PU_DELAY);
     _current_page = -1;
     _PowerOff();
 }
 
-void GxDEPG0290B::drawCornerTest(uint8_t em)
+void GxDEPG0266BN::drawCornerTest(uint8_t em)
 {
     if (_current_page != -1) return;
     _Init_Full(em);
     _writeCommand(0x24);
-    for (uint32_t y = 0; y < GxDEPG0290B_HEIGHT; y++) {
-        for (uint32_t x = 0; x < GxDEPG0290B_WIDTH / 8; x++) {
+    for (uint32_t y = 0; y < GxDEPG0266BN_HEIGHT; y++) {
+        for (uint32_t x = 0; x < GxDEPG0266BN_WIDTH / 8; x++) {
             uint8_t data = 0xFF;
             if ((x < 1) && (y < 8)) data = 0x00;
-            if ((x > GxDEPG0290B_WIDTH / 8 - 3) && (y < 16)) data = 0x00;
-            if ((x > GxDEPG0290B_WIDTH / 8 - 4) && (y > GxDEPG0290B_HEIGHT - 25)) data = 0x00;
-            if ((x < 4) && (y > GxDEPG0290B_HEIGHT - 33)) data = 0x00;
+            if ((x > GxDEPG0266BN_WIDTH / 8 - 3) && (y < 16)) data = 0x00;
+            if ((x > GxDEPG0266BN_WIDTH / 8 - 4) && (y > GxDEPG0266BN_HEIGHT - 25)) data = 0x00;
+            if ((x < 4) && (y > GxDEPG0266BN_HEIGHT - 33)) data = 0x00;
             _writeData(data);
         }
     }

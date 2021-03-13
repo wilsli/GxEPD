@@ -1,4 +1,4 @@
-// class GxDEPG0290B : Display class for GDEP015OC1 e-Paper from Dalian Good Display Co., Ltd.: www.good-display.com
+// class GxDEPG0266BN : Display class for GDEP015OC1 e-Paper from Dalian Good Display Co., Ltd.: www.good-display.com
 //
 // based on Demo Example from Good Display, available here: http://www.good-display.com/download_detail/downloadsId=515.html
 // Controller : IL3829 : http://www.good-display.com/download_detail/downloadsId=534.html
@@ -11,36 +11,36 @@
 //
 // Library: https://github.com/ZinggJM/GxEPD
 
-#ifndef _GxDEPG0290B_H_
-#define _GxDEPG0290B_H_
+#ifndef _GxDEPG0266BN_H_
+#define _GxDEPG0266BN_H_
 
 #include <Arduino.h>
 #include "../GxEPD.h"
 
 // the physical number of pixels (for controller parameter)
-#define GxDEPG0290B_X_PIXELS 128
-#define GxDEPG0290B_Y_PIXELS 296
+#define GxDEPG0266BN_X_PIXELS 152
+#define GxDEPG0266BN_Y_PIXELS 296
 
-#define GxDEPG0290B_WIDTH  GxDEPG0290B_X_PIXELS
-#define GxDEPG0290B_HEIGHT GxDEPG0290B_Y_PIXELS
+#define GxDEPG0266BN_WIDTH  GxDEPG0266BN_X_PIXELS
+#define GxDEPG0266BN_HEIGHT GxDEPG0266BN_Y_PIXELS
 
-#define GxDEPG0290B_BUFFER_SIZE (uint32_t(GxDEPG0290B_WIDTH) * uint32_t(GxDEPG0290B_HEIGHT) / 8)
+#define GxDEPG0266BN_BUFFER_SIZE (uint32_t(GxDEPG0266BN_WIDTH) * uint32_t(GxDEPG0266BN_HEIGHT) / 8)
 
-// divisor for AVR, should be factor of GxDEPG0290B_HEIGHT
-#define GxDEPG0290B_PAGES 4
+// divisor for AVR, should be factor of GxDEPG0266BN_HEIGHT
+#define GxDEPG0266BN_PAGES 4
 
-#define GxDEPG0290B_PAGE_HEIGHT (GxDEPG0290B_HEIGHT / GxDEPG0290B_PAGES)
-#define GxDEPG0290B_PAGE_SIZE (GxDEPG0290B_BUFFER_SIZE / GxDEPG0290B_PAGES)
+#define GxDEPG0266BN_PAGE_HEIGHT (GxDEPG0266BN_HEIGHT / GxDEPG0266BN_PAGES)
+#define GxDEPG0266BN_PAGE_SIZE (GxDEPG0266BN_BUFFER_SIZE / GxDEPG0266BN_PAGES)
 
-class GxDEPG0290B : public GxEPD
+class GxDEPG0266BN : public GxEPD
 {
 public:
 #if defined(ESP8266)
-    //GxDEPG0290B(GxIO& io, int8_t rst = D4, int8_t busy = D2);
+    //GxDEPG0266BN(GxIO& io, int8_t rst = D4, int8_t busy = D2);
     // use pin numbers, other ESP8266 than Wemos may not use Dx names
-    GxDEPG0290B(GxIO &io, int8_t rst = 2, int8_t busy = 4);
+    GxDEPG0266BN(GxIO &io, int8_t rst = 2, int8_t busy = 4);
 #else
-    GxDEPG0290B(GxIO &io, int8_t rst = 9, int8_t busy = 7);
+    GxDEPG0266BN(GxIO &io, int8_t rst = 9, int8_t busy = 7);
 #endif
     void drawPixel(int16_t x, int16_t y, uint16_t color);
     void init(uint32_t serial_diag_bitrate = 0); // = 0 : disabled
@@ -57,7 +57,7 @@ public:
     void updateToWindow(uint16_t xs, uint16_t ys, uint16_t xd, uint16_t yd, uint16_t w, uint16_t h, bool using_rotation = true);
     // terminate cleanly updateWindow or updateToWindow before removing power or long delays
     void powerDown();
-    // paged drawing, for limited RAM, drawCallback() is called GxDEPG0290B_PAGES times
+    // paged drawing, for limited RAM, drawCallback() is called GxDEPG0266BN_PAGES times
     // each call of drawCallback() should draw the same
     void drawPaged(void (*drawCallback)(void));
     void drawPaged(void (*drawCallback)(uint32_t), uint32_t);
@@ -95,9 +95,9 @@ private:
     void _rotate(uint16_t &x, uint16_t &y, uint16_t &w, uint16_t &h);
 protected:
 #if defined(__AVR)
-    uint8_t _buffer[GxDEPG0290B_PAGE_SIZE];
+    uint8_t _buffer[GxDEPG0266BN_PAGE_SIZE];
 #else
-    uint8_t _buffer[GxDEPG0290B_BUFFER_SIZE];
+    uint8_t _buffer[GxDEPG0266BN_BUFFER_SIZE];
 #endif
 private:
     GxIO &IO;
@@ -123,11 +123,11 @@ public:
 };
 
 #ifndef GxEPD_Class
-#define GxEPD_Class GxDEPG0290B
-#define GxEPD_WIDTH GxDEPG0290B_WIDTH
-#define GxEPD_HEIGHT GxDEPG0290B_HEIGHT
-#define GxEPD_BitmapExamples <GxDEPG0290B/BitmapExamples.h>
-#define GxEPD_BitmapExamplesQ "GxDEPG0290B/BitmapExamples.h"
+#define GxEPD_Class GxDEPG0266BN
+#define GxEPD_WIDTH GxDEPG0266BN_WIDTH
+#define GxEPD_HEIGHT GxDEPG0266BN_HEIGHT
+#define GxEPD_BitmapExamples <GxDEPG0266BN/BitmapExamples.h>
+#define GxEPD_BitmapExamplesQ "GxDEPG0266BN/BitmapExamples.h"
 #endif
 
 #endif
