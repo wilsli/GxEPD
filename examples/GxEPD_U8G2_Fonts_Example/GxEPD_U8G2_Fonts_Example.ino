@@ -27,6 +27,8 @@
 //! The current LilyGo uses the ink screen version DEPG0213BN
 // #include <GxDEPG0213BN/GxDEPG0213BN.h>       // 2.13" b/w form DKE GROUP
 
+// #include <GxGDEM0213B74/GxGDEM0213B74.h>  // 2.13" b/w  form GoodDisplay 4-color
+
 // #include <GxGDEH029A1/GxGDEH029A1.h>         // 2.9" b/w
 // #include <GxQYEG0290BN/GxQYEG0290BN.h>       // 2.9" b/w new panel
 // #include <GxDEPG0290B/GxDEPG0290B.h>         // 2.9" b/w new panel
