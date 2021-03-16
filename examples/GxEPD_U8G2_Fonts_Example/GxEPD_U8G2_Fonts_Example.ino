@@ -57,6 +57,7 @@ void setup(void)
     Serial.begin(115200);
     Serial.println();
     Serial.println("setup");
+    SPI.begin(EPD_SCLK, EPD_MISO, EPD_MOSI);
     display.init(); // enable diagnostic output on Serial
     u8g2Fonts.begin(display);
 }
