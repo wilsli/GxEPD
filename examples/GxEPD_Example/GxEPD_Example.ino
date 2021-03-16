@@ -44,6 +44,8 @@
 // #include <GxGDEW029Z10/GxGDEW029Z10.h>    // 2.9" b/w/r
 // #include <GxDEPG0290R/GxDEPG0290R.h>      // 2.9" b/w/r  form DKE GROUP
 
+// #include <GxDEPG0750BN/GxDEPG0750BN.h>    // 7.5" b/w    form DKE GROUP
+
 
 #include GxEPD_BitmapExamples
 
