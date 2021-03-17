@@ -1,5 +1,5 @@
 // class GxDEPG0290R :
-
+// Driver: SSD1680Z8
 #ifndef _GxDEPG0290R_H_
 #define _GxDEPG0290R_H_
 

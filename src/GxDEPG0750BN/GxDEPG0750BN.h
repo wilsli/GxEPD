@@ -1,4 +1,5 @@
-// class GxDEPG0750BN :
+// class GxDEPG0750BN
+// Controller: UC8179C
 
 #ifndef _GxDEPG0750BN_H_
 #define _GxDEPG0750BN_H_
