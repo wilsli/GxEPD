@@ -550,8 +550,8 @@ void GxGDEW0213T5::_sleep(void)
 void GxGDEW0213T5::_Init_FullUpdate(void)
 { //4Gray mode
   _writeCommand(0x00); //panel setting
-  _writeData(0x3f);    //KW-3f   KWR-2F  BWROTP-0f BWOTP-1f  LUTfromOTP-bf
-  //_writeData(0x0d);   //VCOM to 0V fast
+  _writeData(0x1f);    //KW-3f   KWR-2F  BWROTP-0f BWOTP-1f  LUTfromOTP-bf
+  _writeData(0x0d);   //VCOM to 0V fast
 
   _writeCommand(0x30); //PLL setting
   _writeData (0x3c);   // 100HZ

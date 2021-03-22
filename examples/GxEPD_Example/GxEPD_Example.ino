@@ -1,10 +1,13 @@
+#include <U8g2_for_Adafruit_GFX.h>
+#include <u8g2_fonts.h>
+
 /*
     LilyGo Ink Screen Series Test
         - Created by Lewis he
 */
 
 // According to the board, cancel the corresponding macro definition
-// #define LILYGO_T5_V213
+#define LILYGO_T5_V213
 // #define LILYGO_T5_V22
 // #define LILYGO_T5_V24
 // #define LILYGO_T5_V28
@@ -45,7 +48,7 @@
 // #include <GxDEPG0290R/GxDEPG0290R.h>      // 2.9" b/w/r  form DKE GROUP
 
 // #include <GxDEPG0750BN/GxDEPG0750BN.h>    // 7.5" b/w    form DKE GROUP
-
+#include <GxGDEW0213T5/GxGDEW0213T5.h>
 
 #include GxEPD_BitmapExamples
 
@@ -60,7 +63,7 @@
 
 GxIO_Class io(SPI,  EPD_CS, EPD_DC,  EPD_RSET);
 GxEPD_Class display(io, EPD_RSET, EPD_BUSY);
-
+U8G2_FOR_ADAFRUIT_GFX u8g2Font;
 
 #if defined(_HAS_SDCARD_) && !defined(_USE_SHARED_SPI_BUS_)
 SPIClass SDSPI(VSPI);
@@ -142,9 +145,11 @@ void setup()
     SPI.begin(EPD_SCLK, EPD_MISO, EPD_MOSI);
 
     display.init();
+    u8g2Font.begin(display);
+    
     display.setTextColor(GxEPD_BLACK);
 
-    testSpeaker();
+    //testSpeaker();
 
     testWiFi();
 
@@ -158,7 +163,10 @@ void setup()
 #else
     display.drawExampleBitmap(BitmapExample1, 0, 0, GxEPD_WIDTH, GxEPD_HEIGHT, GxEPD_BLACK);
 #endif
-
+    delay(5000);
+    
+    display.fillScreen(GxEPD_WHITE);
+    
 #if defined(_HAS_SDCARD_)
     display.setRotation(1);
     display.setCursor(20, display.height() - 15);
@@ -176,13 +184,13 @@ void setup()
 
     display.update();
 
-    delay(10000);
+    delay(5000);
 
 }
 
 void loop()
 {
-    drawCornerTest();
+    //drawCornerTest();
 
     int i = 0;
 
@@ -194,9 +202,6 @@ void loop()
         i++;
     }
 
-    display.fillScreen(GxEPD_WHITE);
-
-    display.update();
 
     display.powerDown();
 
@@ -209,19 +214,27 @@ void loop()
 void showFont(const char name[], const GFXfont *f)
 {
     display.fillScreen(GxEPD_WHITE);
-    display.setTextColor(GxEPD_BLACK);
-    display.setFont(f);
-    display.setCursor(0, 0);
-    display.println();
-    display.println(name);
-    display.println(" !\"#$%&'()*+,-./");
-    display.println("0123456789:;<=>?");
-    display.println("@ABCDEFGHIJKLMNO");
-    display.println("PQRSTUVWXYZ[\\]^_");
-    display.println("`abcdefghijklmno");
-    display.println("pqrstuvwxyz{|}~ ");
+    //display.setTextColor(GxEPD_BLACK);
+    //display.setFont(f);
+    //display.setCursor(0, 0);
+    //display.println();
+    //display.println(name);
+    //display.println(" !\"#$%&'()*+,-./");
+    //display.println("0123456789:;<=>?");
+    //display.println("@ABCDEFGHIJKLMNO");
+    //display.println("PQRSTUVWXYZ[\\]^_");
+    //display.println("`abcdefghijklmno");
+    //display.println("pqrstuvwxyz{|}~ ");
+    u8g2Font.setForegroundColor(GxEPD_BLACK);          // apply Adafruit GFX color
+    u8g2Font.setBackgroundColor(GxEPD_WHITE); 
+    u8g2Font.setFont(u8g2_font_wqy16_t_gb2312);
+    u8g2Font.setCursor(10,20);
+    u8g2Font.print("丽雅世界! ");
+    u8g2Font.setCursor(10,40);
+    u8g2Font.print("BubbLeah World!");
+    
     display.update();
-    delay(5000);
+    delay(3000);
 }
 
 void drawCornerTest()
@@ -241,4 +254,3 @@ void drawCornerTest()
     }
     display.setRotation(rotation); // restore
 }
-
