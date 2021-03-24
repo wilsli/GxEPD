@@ -1,6 +1,5 @@
 #include <U8g2_for_Adafruit_GFX.h>
 #include <u8g2_fonts.h>
-
 /*
     LilyGo Ink Screen Series Test
         - Created by Lewis he
@@ -151,7 +150,7 @@ void setup()
 
     //testSpeaker();
 
-    testWiFi();
+    //testWiFi();
 
     rlst = setupSDCard();
 
@@ -190,7 +189,7 @@ void setup()
 
 void loop()
 {
-    //drawCornerTest();
+    drawCornerTest();
 
     int i = 0;
 
@@ -231,6 +230,7 @@ void showFont(const char name[], const GFXfont *f)
     u8g2Font.setCursor(10,20);
     u8g2Font.print("丽雅世界! ");
     u8g2Font.setCursor(10,40);
+    u8g2Font.setForegroundColor(GxEPD_BLACK);
     u8g2Font.print("BubbLeah World!");
     
     display.update();
@@ -240,7 +240,7 @@ void showFont(const char name[], const GFXfont *f)
 void drawCornerTest()
 {
     display.drawCornerTest();
-    delay(5000);
+    delay(1000);
     uint8_t rotation = display.getRotation();
     for (uint16_t r = 0; r < 4; r++) {
         display.setRotation(r);
@@ -250,7 +250,7 @@ void drawCornerTest()
         display.fillRect(display.width() - 25, display.height() - 25, 24, 24, GxEPD_BLACK);
         display.fillRect(0, display.height() - 33, 32, 32, GxEPD_BLACK);
         display.update();
-        delay(5000);
+        delay(2000);
     }
     display.setRotation(rotation); // restore
 }
